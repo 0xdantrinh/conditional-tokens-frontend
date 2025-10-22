@@ -12,6 +12,8 @@ export const getCurrentNetworkName = () => {
       return 'goerli'
     case 42:
       return 'kovan'
+    case 84532:
+      return 'base-sepolia'
     default:
       return null
   }

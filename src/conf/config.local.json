@@ -1,6 +1,6 @@
 {
-  "networkId": 1581350973751,
-  "lmsrAddress": "0x98036b9Fca2DdA0e94BC10cdc6Ea6cA0a53B6C0A",
+  "networkId": 84532,
+  "lmsrAddress": "0x8aD1D38B26FeCF788eCF8A3aa36a93eaCb26Ce3C",
   "markets": [
     {
       "questionId": "0x4b22fe478b95fdaa835ddddf631ab29f12900b62061e0c5fd8564ddb7b684333",
@@ -17,5 +17,5 @@
       ]
     }
   ],
-  "network": "local"
+  "network": "base-sepolia"
 }

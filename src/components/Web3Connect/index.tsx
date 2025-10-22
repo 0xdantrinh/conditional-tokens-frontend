@@ -13,12 +13,15 @@ type Props = {
 let web3ConnectListenersAdded = false
 
 const web3Connect = new Web3Connect.Core({
-  network: getCurrentNetworkName() || 'rinkeby',
+  network: getCurrentNetworkName() || 'base-sepolia',
   providerOptions: {
     walletconnect: {
       package: WalletConnectProvider,
       options: {
-        infuraId: process.env.REACT_APP_INFURA_ID,
+        rpc: {
+          84532: 'https://sepolia.base.org',
+        },
+        chainId: 84532,
       },
     },
   },
