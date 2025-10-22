@@ -121,8 +121,14 @@ const Market: React.FC<MarketProps> = ({ web3, account, marketConfig }) => {
 
     const collateralBalance = await collateral.contract.balanceOf(account)
     if (cost.gt(collateralBalance)) {
-      await collateral.contract.deposit({ value: formatedAmount.toString(), from: account })
-      await collateral.contract.approve(marketInfo.lmsrAddress, formatedAmount.toString(), {
+      // Need to deposit ETH to get WETH
+      await collateral.contract.deposit({ value: cost.toString(), from: account })
+    }
+
+    // Always approve the market maker to spend WETH
+    const allowance = await collateral.contract.allowance(account, marketInfo.lmsrAddress)
+    if (new BigNumber(allowance).lt(cost)) {
+      await collateral.contract.approve(marketInfo.lmsrAddress, cost.toString(), {
         from: account,
       })
     }
