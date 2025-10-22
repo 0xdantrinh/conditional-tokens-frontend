@@ -59,13 +59,13 @@ const TradingForm: React.FC<TradingFormProps> = ({
         variant="filled"
         label="Collateral value"
         type="number"
-        onChange={e => setSelectedAmount(e.target.value)}
+        onChange={(e) => setSelectedAmount(e.target.value)}
         disabled={isMarketClosed}
       />
     </div>
     <RadioGroup
       defaultValue={0}
-      onChange={e => setSelectedOutcomeToken(parseInt(e.target.value))}
+      onChange={(e) => setSelectedOutcomeToken(parseInt(e.target.value))}
       value={selectedOutcomeToken}
     >
       {marketInfo.outcomes.map((outcome: any, index: number) => (
@@ -168,8 +168,59 @@ const Layout: React.FC<LayoutProps> = ({
     <Paper className={styles.condition}>
       {isConditionLoaded ? (
         <>
-          <h2>{marketInfo.title}</h2>
-          <p>State: {marketInfo.stage}</p>
+          <div
+            style={{ borderBottom: '1px solid #ddd', paddingBottom: '15px', marginBottom: '20px' }}
+          >
+            <div
+              style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}
+            >
+              <div style={{ flex: 1 }}>
+                <h2 style={{ marginBottom: '10px' }}>{marketInfo.title}</h2>
+                {marketInfo.description && (
+                  <p style={{ fontSize: '14px', opacity: 0.8, marginBottom: '10px' }}>
+                    {marketInfo.description}
+                  </p>
+                )}
+              </div>
+              <div style={{ marginLeft: '20px', textAlign: 'right' }}>
+                <div
+                  style={{
+                    display: 'inline-block',
+                    padding: '5px 15px',
+                    borderRadius: '20px',
+                    backgroundColor:
+                      marketInfo.stage === 'Running'
+                        ? '#4caf50'
+                        : marketInfo.stage === 'Closed'
+                        ? '#f44336'
+                        : '#ff9800',
+                    color: 'white',
+                    fontSize: '12px',
+                    fontWeight: 'bold',
+                  }}
+                >
+                  {marketInfo.stage}
+                </div>
+              </div>
+            </div>
+            {marketInfo.category && (
+              <div style={{ marginTop: '10px' }}>
+                <span
+                  style={{
+                    display: 'inline-block',
+                    padding: '3px 10px',
+                    backgroundColor: '#e3f2fd',
+                    color: '#1976d2',
+                    borderRadius: '5px',
+                    fontSize: '12px',
+                    fontWeight: 500,
+                  }}
+                >
+                  {marketInfo.category}
+                </span>
+              </div>
+            )}
+          </div>
           <TradingForm
             isMarketClosed={isMarketClosed}
             marketInfo={marketInfo}

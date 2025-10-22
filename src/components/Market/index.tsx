@@ -7,11 +7,10 @@ import Layout from './Layout'
 
 BigNumber.config({ EXPONENTIAL_AT: 50 })
 
-const markets = require('src/conf/config.local.json')
-
 type MarketProps = {
   web3: any
   account: string
+  marketConfig: any
 }
 
 enum MarketStage {
@@ -23,7 +22,7 @@ enum MarketStage {
 let conditionalTokensRepo: any
 let marketMakersRepo: any
 
-const Market: React.FC<MarketProps> = ({ web3, account }) => {
+const Market: React.FC<MarketProps> = ({ web3, account, marketConfig }) => {
   const [isConditionLoaded, setIsConditionLoaded] = useState<boolean>(false)
   const [selectedAmount, setSelectedAmount] = useState<string>('')
   const [selectedOutcomeToken, setSelectedOutcomeToken] = useState<number>(0)
@@ -32,8 +31,12 @@ const Market: React.FC<MarketProps> = ({ web3, account }) => {
   useEffect(() => {
     const init = async () => {
       try {
-        conditionalTokensRepo = await loadConditionalTokensRepo(web3, markets.lmsrAddress, account)
-        marketMakersRepo = await loadMarketMakersRepo(web3, markets.lmsrAddress, account)
+        conditionalTokensRepo = await loadConditionalTokensRepo(
+          web3,
+          marketConfig.lmsrAddress,
+          account,
+        )
+        marketMakersRepo = await loadMarketMakersRepo(web3, marketConfig.lmsrAddress, account)
         await getMarketInfo()
         setIsConditionLoaded(true)
       } catch (err) {
@@ -43,23 +46,23 @@ const Market: React.FC<MarketProps> = ({ web3, account }) => {
     }
 
     init()
-  }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [web3, account, marketConfig])
 
   const getMarketInfo = async () => {
     if (!process.env.REACT_APP_ORACLE_ADDRESS) return
     const collateral = await marketMakersRepo.getCollateralToken()
     const conditionId = getConditionId(
       process.env.REACT_APP_ORACLE_ADDRESS,
-      markets.markets[0].questionId,
-      markets.markets[0].outcomes.length,
+      marketConfig.questionId,
+      marketConfig.outcomes.length,
     )
     const payoutDenominator = await conditionalTokensRepo.payoutDenominator(conditionId)
 
     const outcomes = []
-    for (let outcomeIndex = 0; outcomeIndex < markets.markets[0].outcomes.length; outcomeIndex++) {
-      const indexSet = (outcomeIndex === 0
-        ? 1
-        : parseInt(Math.pow(10, outcomeIndex).toString(), 2)
+    for (let outcomeIndex = 0; outcomeIndex < marketConfig.outcomes.length; outcomeIndex++) {
+      const indexSet = (
+        outcomeIndex === 0 ? 1 : parseInt(Math.pow(10, outcomeIndex).toString(), 2)
       ).toString()
       const collectionId = await conditionalTokensRepo.getCollectionId(
         `0x${'0'.repeat(64)}`,
@@ -76,7 +79,7 @@ const Market: React.FC<MarketProps> = ({ web3, account }) => {
 
       const outcome = {
         index: outcomeIndex,
-        title: markets.markets[0].outcomes[outcomeIndex].title,
+        title: marketConfig.outcomes[outcomeIndex].title,
         probability: new BigNumber(probability)
           .dividedBy(Math.pow(2, 64))
           .multipliedBy(100)
@@ -88,11 +91,13 @@ const Market: React.FC<MarketProps> = ({ web3, account }) => {
     }
 
     const marketData = {
-      lmsrAddress: markets.lmsrAddress,
-      title: markets.markets[0].title,
+      lmsrAddress: marketConfig.lmsrAddress,
+      title: marketConfig.title,
+      category: marketConfig.category,
+      description: marketConfig.description,
       outcomes,
       stage: MarketStage[await marketMakersRepo.stage()],
-      questionId: markets.markets[0].questionId,
+      questionId: marketConfig.questionId,
       conditionId: conditionId,
       payoutDenominator: payoutDenominator,
     }

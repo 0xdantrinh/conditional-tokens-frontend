@@ -1,10 +1,31 @@
 {
   "networkId": 84532,
-  "lmsrAddress": "0x8aD1D38B26FeCF788eCF8A3aa36a93eaCb26Ce3C",
+  "lmsrMarketMakers": {
+    "0x1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b": "0xd29FD10bE9B08E8a9d517a04164Ea8aEAb029834",
+    "0x2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c": "0x72d200bEc23846Da8679ffbaeF000DAC6267A885",
+    "0x3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d": "0x02eBb45e3F70A7b2cAb984a196798633bdc29C14",
+    "0x4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e": "0x353f08E1403Ee694F82C447c4AB49C021908278d",
+    "0x5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f": "0x464e7406b75E3dd9f8fF277dE045D22ADC85EB8D",
+    "0x6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a": "0x245333c352CdccCe84EACbde34103Dbe778CeF41",
+    "0x7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b": "0x87da2660153B214f4E9Aedd8d55C5ccE23505812",
+    "0x8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c": "0x779e89af7cec181a4871C3767AA8681719360C33",
+    "0x9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d": "0x4D8e60D46EFCb597856eEE9cA8D8D207B4f060ee",
+    "0xa0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1": "0xe77478c3e390766Dda9A835df3F614F9ADEe2ebC",
+    "0xb1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2": "0x2b1c06D6F0D67c6D0244f1178c1Cd0d6C89aD183",
+    "0xc2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3": "0xF7ED0a1Eca4dc4Ac4C79E7cE7e7e5f71716B3b10",
+    "0xd3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4": "0x2FA7dA5052A744c818cf7b2A1562b9afACd57659",
+    "0xe4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5": "0x56F84162852F902c8c508274CFb1454831a00De1",
+    "0xf5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6": "0x486184074b7FD58Cc94F3da78F324eEa0e5C585A",
+    "0x4b22fe478b95fdaa835ddddf631ab29f12900b62061e0c5fd8564ddb7b684333": "0xF7f542ec5E6a784d80B828822ccDdeE6D69b9076"
+  },
   "markets": [
     {
-      "questionId": "0x4b22fe478b95fdaa835ddddf631ab29f12900b62061e0c5fd8564ddb7b684333",
-      "title": "Will the summer 2020 in Germany break again weather records? ",
+      "category": "Crypto",
+      "questionId": "0x1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b",
+      "title": "Will Bitcoin reach $150,000 by end of 2025?",
+      "description": "This market resolves to YES if Bitcoin (BTC) trades at or above $150,000 on any major exchange (Coinbase, Binance, Kraken) before December 31, 2025, 11:59 PM UTC.",
+      "resolutionSource": "CoinGecko, CoinMarketCap",
+      "endDate": "2025-12-31T23:59:59Z",
       "outcomes": [
         {
           "title": "Yes",
@@ -14,8 +35,316 @@
           "title": "No",
           "short": "No"
         }
-      ]
+      ],
+      "lmsrAddress": "0xd29FD10bE9B08E8a9d517a04164Ea8aEAb029834",
+      "conditionId": "0xd98beeb944c569ec474fa63d1407f844717a03c43a90ba61a1fe004a62b9ee67"
+    },
+    {
+      "category": "Crypto",
+      "questionId": "0x2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c",
+      "title": "Will Ethereum successfully complete 'The Surge' upgrade in 2025?",
+      "description": "Resolves YES if Ethereum implements sharding or equivalent scalability improvements as part of 'The Surge' roadmap phase by December 31, 2025.",
+      "resolutionSource": "Ethereum Foundation official announcements",
+      "endDate": "2025-12-31T23:59:59Z",
+      "outcomes": [
+        {
+          "title": "Yes",
+          "short": "Yes"
+        },
+        {
+          "title": "No",
+          "short": "No"
+        }
+      ],
+      "lmsrAddress": "0x72d200bEc23846Da8679ffbaeF000DAC6267A885",
+      "conditionId": "0x40e169eb41adb20061ee59c6d733ac8ed57ff1fe1dacd5d5e5c53e8c786623a4"
+    },
+    {
+      "category": "Crypto",
+      "questionId": "0x3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d",
+      "title": "Will Base network TVL exceed $10 billion in 2025?",
+      "description": "Resolves YES if Base network's Total Value Locked (TVL) reaches or exceeds $10 billion USD at any point before December 31, 2025.",
+      "resolutionSource": "DefiLlama, L2Beat",
+      "endDate": "2025-12-31T23:59:59Z",
+      "outcomes": [
+        {
+          "title": "Yes",
+          "short": "Yes"
+        },
+        {
+          "title": "No",
+          "short": "No"
+        }
+      ],
+      "lmsrAddress": "0x02eBb45e3F70A7b2cAb984a196798633bdc29C14",
+      "conditionId": "0xe3068ce62e4d8bb2f9f88e888f9a1741377f536ba3c6c3ada4b38acc5485a3bf"
+    },
+    {
+      "category": "Politics",
+      "questionId": "0x4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e",
+      "title": "Will the US approve a Bitcoin Strategic Reserve in 2025?",
+      "description": "Resolves YES if the United States federal government officially creates and funds a Bitcoin strategic reserve before December 31, 2025.",
+      "resolutionSource": "Official US Treasury or Congressional records",
+      "endDate": "2025-12-31T23:59:59Z",
+      "outcomes": [
+        {
+          "title": "Yes",
+          "short": "Yes"
+        },
+        {
+          "title": "No",
+          "short": "No"
+        }
+      ],
+      "lmsrAddress": "0x353f08E1403Ee694F82C447c4AB49C021908278d",
+      "conditionId": "0x9b87b3613d03d9ee8f5abfc7ad160c922352af7e08e8a0c54a4ec18779a6ca42"
+    },
+    {
+      "category": "Politics",
+      "questionId": "0x5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f",
+      "title": "Will the EU pass comprehensive AI regulation before 2026?",
+      "description": "Resolves YES if the European Union's AI Act or equivalent comprehensive AI regulation becomes law before January 1, 2026.",
+      "resolutionSource": "Official EU legislative records",
+      "endDate": "2025-12-31T23:59:59Z",
+      "outcomes": [
+        {
+          "title": "Yes",
+          "short": "Yes"
+        },
+        {
+          "title": "No",
+          "short": "No"
+        }
+      ],
+      "lmsrAddress": "0x464e7406b75E3dd9f8fF277dE045D22ADC85EB8D",
+      "conditionId": "0x843c6b8cb7efe61564cf60afff1bae67d0faa29e66eb73e26aa530820cb36702"
+    },
+    {
+      "category": "Technology",
+      "questionId": "0x6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a",
+      "title": "Will GPT-5 be released by OpenAI in 2025?",
+      "description": "Resolves YES if OpenAI officially releases a model called GPT-5 or announces GPT-4's successor with significantly improved capabilities before December 31, 2025.",
+      "resolutionSource": "OpenAI official announcements",
+      "endDate": "2025-12-31T23:59:59Z",
+      "outcomes": [
+        {
+          "title": "Yes",
+          "short": "Yes"
+        },
+        {
+          "title": "No",
+          "short": "No"
+        }
+      ],
+      "lmsrAddress": "0x245333c352CdccCe84EACbde34103Dbe778CeF41",
+      "conditionId": "0x9156cbeaf7b0905fc4f725a833461bba8c9f25276ac1867e774825f8a32b0d83"
+    },
+    {
+      "category": "Technology",
+      "questionId": "0x7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b",
+      "title": "Will Apple release an AI-powered HomePod with advanced capabilities in 2025?",
+      "description": "Resolves YES if Apple announces and releases a HomePod device with integrated AI assistant superior to current Siri capabilities.",
+      "resolutionSource": "Apple official product announcements",
+      "endDate": "2025-12-31T23:59:59Z",
+      "outcomes": [
+        {
+          "title": "Yes",
+          "short": "Yes"
+        },
+        {
+          "title": "No",
+          "short": "No"
+        }
+      ],
+      "lmsrAddress": "0x87da2660153B214f4E9Aedd8d55C5ccE23505812",
+      "conditionId": "0x93fadf7835069a49edc33b9849f52824983271073cbd1a471583df96b8be36ee"
+    },
+    {
+      "category": "Sports",
+      "questionId": "0x8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c",
+      "title": "Will an NBA team win 70+ games in the 2025-26 season?",
+      "description": "Resolves YES if any NBA team wins 70 or more regular season games during the 2025-26 season.",
+      "resolutionSource": "Official NBA records",
+      "endDate": "2026-04-30T23:59:59Z",
+      "outcomes": [
+        {
+          "title": "Yes",
+          "short": "Yes"
+        },
+        {
+          "title": "No",
+          "short": "No"
+        }
+      ],
+      "lmsrAddress": "0x779e89af7cec181a4871C3767AA8681719360C33",
+      "conditionId": "0xb471c969a9b7a47acee3e8f7bb1c25b84fa2b04164d72cfbd698e60b2bf455d1"
+    },
+    {
+      "category": "Entertainment",
+      "questionId": "0x9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d",
+      "title": "Will a streaming service surpass Netflix in global subscribers by 2026?",
+      "description": "Resolves YES if Disney+, Amazon Prime Video, or any other streaming service reports more global paid subscribers than Netflix before January 1, 2026.",
+      "resolutionSource": "Official company quarterly reports",
+      "endDate": "2025-12-31T23:59:59Z",
+      "outcomes": [
+        {
+          "title": "Yes",
+          "short": "Yes"
+        },
+        {
+          "title": "No",
+          "short": "No"
+        }
+      ],
+      "lmsrAddress": "0x4D8e60D46EFCb597856eEE9cA8D8D207B4f060ee",
+      "conditionId": "0xe73061ab9469624ca2dbc0c9d1ef7dcac7dce0835fd694e2dd0d866a3ff0af38"
+    },
+    {
+      "category": "Science",
+      "questionId": "0xa0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1",
+      "title": "Will SpaceX successfully land humans on Mars by 2030?",
+      "description": "Resolves YES if SpaceX successfully lands at least one human on the surface of Mars before January 1, 2030.",
+      "resolutionSource": "NASA, SpaceX official announcements",
+      "endDate": "2029-12-31T23:59:59Z",
+      "outcomes": [
+        {
+          "title": "Yes",
+          "short": "Yes"
+        },
+        {
+          "title": "No",
+          "short": "No"
+        }
+      ],
+      "lmsrAddress": "0xe77478c3e390766Dda9A835df3F614F9ADEe2ebC",
+      "conditionId": "0xfc9720100b578b42fe98719cd0a380623bf67f779b1017afb679717cf5608efb"
+    },
+    {
+      "category": "Science",
+      "questionId": "0xb1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2",
+      "title": "Will a quantum computer achieve quantum advantage in drug discovery by 2026?",
+      "description": "Resolves YES if a quantum computer demonstrates practical quantum advantage in pharmaceutical drug discovery applications before January 1, 2026.",
+      "resolutionSource": "Peer-reviewed scientific publications",
+      "endDate": "2025-12-31T23:59:59Z",
+      "outcomes": [
+        {
+          "title": "Yes",
+          "short": "Yes"
+        },
+        {
+          "title": "No",
+          "short": "No"
+        }
+      ],
+      "lmsrAddress": "0x2b1c06D6F0D67c6D0244f1178c1Cd0d6C89aD183",
+      "conditionId": "0x11fa8974962e1782a03b4beb43e2edb3de7fc2e90e97b74ab0f9431581bdb2c8"
+    },
+    {
+      "category": "Business",
+      "questionId": "0xc2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3",
+      "title": "Will Tesla's market cap exceed $1 trillion in 2025?",
+      "description": "Resolves YES if Tesla's market capitalization reaches or exceeds $1 trillion USD at market close on any trading day in 2025.",
+      "resolutionSource": "Major stock exchanges (NASDAQ)",
+      "endDate": "2025-12-31T23:59:59Z",
+      "outcomes": [
+        {
+          "title": "Yes",
+          "short": "Yes"
+        },
+        {
+          "title": "No",
+          "short": "No"
+        }
+      ],
+      "lmsrAddress": "0xF7ED0a1Eca4dc4Ac4C79E7cE7e7e5f71716B3b10",
+      "conditionId": "0xcccbd132273082b8bbc963d0f022e4c8fd05f773cb8abf09fbca22cbf7580199"
+    },
+    {
+      "category": "Business",
+      "questionId": "0xd3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4",
+      "title": "Will any company achieve a $5 trillion market cap by 2026?",
+      "description": "Resolves YES if any publicly traded company reaches a market capitalization of $5 trillion USD or more before January 1, 2026.",
+      "resolutionSource": "Major stock exchanges",
+      "endDate": "2025-12-31T23:59:59Z",
+      "outcomes": [
+        {
+          "title": "Yes",
+          "short": "Yes"
+        },
+        {
+          "title": "No",
+          "short": "No"
+        }
+      ],
+      "lmsrAddress": "0x2FA7dA5052A744c818cf7b2A1562b9afACd57659",
+      "conditionId": "0x873c1afc69b5e66b703d6f7ae8cc2bc9d6d993412c6756f93d993135f0d7abcc"
+    },
+    {
+      "category": "Climate",
+      "questionId": "0xe4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5",
+      "title": "Will 2025 be recorded as the hottest year on record?",
+      "description": "Resolves YES if 2025 is confirmed by major climate organizations (NASA, NOAA, WMO) as the hottest year in recorded history.",
+      "resolutionSource": "NASA, NOAA, World Meteorological Organization",
+      "endDate": "2026-01-31T23:59:59Z",
+      "outcomes": [
+        {
+          "title": "Yes",
+          "short": "Yes"
+        },
+        {
+          "title": "No",
+          "short": "No"
+        }
+      ],
+      "lmsrAddress": "0x56F84162852F902c8c508274CFb1454831a00De1",
+      "conditionId": "0xb4bed1525f9f84fb6bccc59d6a78bc09bf68fe84538847d8e3c6913bda36e295"
+    },
+    {
+      "category": "Climate",
+      "questionId": "0xf5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6",
+      "title": "Will global renewable energy capacity exceed 50% by 2026?",
+      "description": "Resolves YES if renewable energy sources (solar, wind, hydro, etc.) account for more than 50% of global electricity generation capacity by end of 2025.",
+      "resolutionSource": "International Energy Agency (IEA)",
+      "endDate": "2026-01-31T23:59:59Z",
+      "outcomes": [
+        {
+          "title": "Yes",
+          "short": "Yes"
+        },
+        {
+          "title": "No",
+          "short": "No"
+        }
+      ],
+      "lmsrAddress": "0x486184074b7FD58Cc94F3da78F324eEa0e5C585A",
+      "conditionId": "0xf775f9cfc94f2c19be7c774082f21add70efe9db1617ff2760a9f6a805e72d4a"
+    },
+    {
+      "category": "Climate",
+      "questionId": "0x4b22fe478b95fdaa835ddddf631ab29f12900b62061e0c5fd8564ddb7b684333",
+      "title": "Will the summer 2020 in Germany break again weather records?",
+      "description": "Legacy market - historical weather prediction.",
+      "resolutionSource": "Weather agencies",
+      "endDate": "2020-09-30T23:59:59Z",
+      "outcomes": [
+        {
+          "title": "Yes",
+          "short": "Yes"
+        },
+        {
+          "title": "No",
+          "short": "No"
+        }
+      ],
+      "lmsrAddress": "0xF7f542ec5E6a784d80B828822ccDdeE6D69b9076",
+      "conditionId": "0xe1c5e35b1879a8d9c1409d1cb6312c650868f22f0ec5366d34eb1783a89c1fce"
     }
   ],
-  "network": "base-sepolia"
+  "network": "base-sepolia",
+  "deployedAt": "2025-10-22T19:12:23.163Z",
+  "contracts": {
+    "conditionalTokens": "0x2485eaB838e7ECc79CC6cEB3534104b3A34B4d27",
+    "collateralToken": "0x1ac2b9d49305237c024Df663e5bdBa0EbDc10394",
+    "lmsrMarketMakerFactory": "0x799b6EB7c68D01Cb0747A689D340C7E90324BC61"
+  }
 }
