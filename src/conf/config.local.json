@@ -1,22 +1,22 @@
 {
   "networkId": 84532,
   "lmsrMarketMakers": {
-    "0x1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b": "0x5797E321f207D344760379aBbd48E77061764401",
-    "0x2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c": "0xDB9F02D12498d1fCA5634bb118e4896F7691E7FC",
-    "0x3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d": "0xe4D699e49a7F1E515744419ccA11e415F8aB29dA",
-    "0x4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e": "0xF0252Fe6B8dFA1e058d79A8ad10e955A96D94e3F",
-    "0x5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f": "0x7183AEDf8846E9C6446755C58CcA3647B5Dea930",
-    "0x6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a": "0xF19aa44F836a40F7D97dccF5Da14FEe8e7888C8f",
-    "0x7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b": "0x5B47a68BE88979EE258faBdFB0aEc513C9350286",
-    "0x8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c": "0x327b5594D2C18d99d4D24Acb3D16BAEC74ff3140",
-    "0x9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d": "0xf1Fa44b82B35a43f6fA892f1b9aFeA36A8dDa35A",
-    "0xa0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1": "0x613556Ca81d59f4D8b3E2F2A96C72DdfD70F2f5d",
-    "0xb1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2": "0xF3E15ADE4734De39F3Cf6A7C0B78d9079eF9FBd1",
-    "0xc2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3": "0x6C84c6f659221fC425D8e97b8a90183db90EEEF0",
-    "0xd3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4": "0x82c415027faA0866eaBDC00B1BaF85A9a1d22b09",
-    "0xe4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5": "0xe448672085a98C45Bed9fb10Bf8044F17e5c050c",
-    "0xf5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6": "0x16a0Fc3dD51e91d9f79ad94B3CA9C89A44373D7e",
-    "0x4b22fe478b95fdaa835ddddf631ab29f12900b62061e0c5fd8564ddb7b684333": "0xBADA8945705c225413cCc70F5Bd8173E611A25AA"
+    "0x1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b": "0x136fF40f8C4d7d669Cfe31Dacae21d273aC4a5d7",
+    "0x2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c": "0x1cB5fD24312D15D29968183105BA04decD9276Ff",
+    "0x3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d": "0xFFEA37ACA8bc021a1Ae08E20d5753A7f5bF6F218",
+    "0x4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e": "0x445D4480e6CEb51EEAabb34d48cfD20AA9EE1103",
+    "0x5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f": "0x4209984c1a2DFf2dc1bF9F741abA799A10e6c7d7",
+    "0x6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a": "0x1e589500A66Cce86FdADe6a46515FF1EAB59E164",
+    "0x7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b": "0x1EAfA026F0578E1969d24cFAF73Ec8B5F383A9FD",
+    "0x8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c": "0x88C5E5032f3F69cc154D9bCB6E18D100db70555b",
+    "0x9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d": "0x354aCC565Abf57E271a9925F5CAfB5CA1d28B7b2",
+    "0xa0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1": "0x3B63D350d87F550Ba7c664B7655c998547eCe7a0",
+    "0xb1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2": "0x3FE37348cb0Cf454abCFA82Ce5E7713210485960",
+    "0xc2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3": "0x31625445E87A944B6Cd26f163aaFaB70Df5CAf7F",
+    "0xd3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4": "0xA3179EBcCf8ee0FecF8adb6F5ABfE1179d04E34e",
+    "0xe4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5": "0x60Ff16501D19569086f198Ea88e0b1F56cD13124",
+    "0xf5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6": "0x1447f600893Fe8AB2a2ccf2C587f91dAC2791c51",
+    "0x4b22fe478b95fdaa835ddddf631ab29f12900b62061e0c5fd8564ddb7b684333": "0x327D7eAc48c9f1937cb31D6461E1044d37C7bcb8"
   },
   "markets": [
     {
@@ -24,120 +24,120 @@
       "questionId": "0x1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b",
       "title": "Will Bitcoin reach $150,000 by end of 2025?",
       "conditionId": "0xd98beeb944c569ec474fa63d1407f844717a03c43a90ba61a1fe004a62b9ee67",
-      "lmsrAddress": "0x5797E321f207D344760379aBbd48E77061764401"
+      "lmsrAddress": "0x136fF40f8C4d7d669Cfe31Dacae21d273aC4a5d7"
     },
     {
       "category": "Crypto",
       "questionId": "0x2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c",
       "title": "Will Ethereum successfully complete 'The Surge' upgrade in 2025?",
       "conditionId": "0x40e169eb41adb20061ee59c6d733ac8ed57ff1fe1dacd5d5e5c53e8c786623a4",
-      "lmsrAddress": "0xDB9F02D12498d1fCA5634bb118e4896F7691E7FC"
+      "lmsrAddress": "0x1cB5fD24312D15D29968183105BA04decD9276Ff"
     },
     {
       "category": "Crypto",
       "questionId": "0x3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d",
       "title": "Will Base network TVL exceed $10 billion in 2025?",
       "conditionId": "0xe3068ce62e4d8bb2f9f88e888f9a1741377f536ba3c6c3ada4b38acc5485a3bf",
-      "lmsrAddress": "0xe4D699e49a7F1E515744419ccA11e415F8aB29dA"
+      "lmsrAddress": "0xFFEA37ACA8bc021a1Ae08E20d5753A7f5bF6F218"
     },
     {
       "category": "Politics",
       "questionId": "0x4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e",
       "title": "Will the US approve a Bitcoin Strategic Reserve in 2025?",
       "conditionId": "0x9b87b3613d03d9ee8f5abfc7ad160c922352af7e08e8a0c54a4ec18779a6ca42",
-      "lmsrAddress": "0xF0252Fe6B8dFA1e058d79A8ad10e955A96D94e3F"
+      "lmsrAddress": "0x445D4480e6CEb51EEAabb34d48cfD20AA9EE1103"
     },
     {
       "category": "Politics",
       "questionId": "0x5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f",
       "title": "Will the EU pass comprehensive AI regulation before 2026?",
       "conditionId": "0x843c6b8cb7efe61564cf60afff1bae67d0faa29e66eb73e26aa530820cb36702",
-      "lmsrAddress": "0x7183AEDf8846E9C6446755C58CcA3647B5Dea930"
+      "lmsrAddress": "0x4209984c1a2DFf2dc1bF9F741abA799A10e6c7d7"
     },
     {
       "category": "Technology",
       "questionId": "0x6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a",
       "title": "Will GPT-5 be released by OpenAI in 2025?",
       "conditionId": "0x9156cbeaf7b0905fc4f725a833461bba8c9f25276ac1867e774825f8a32b0d83",
-      "lmsrAddress": "0xF19aa44F836a40F7D97dccF5Da14FEe8e7888C8f"
+      "lmsrAddress": "0x1e589500A66Cce86FdADe6a46515FF1EAB59E164"
     },
     {
       "category": "Technology",
       "questionId": "0x7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b",
       "title": "Will Apple release an AI-powered HomePod with advanced capabilities in 2025?",
       "conditionId": "0x93fadf7835069a49edc33b9849f52824983271073cbd1a471583df96b8be36ee",
-      "lmsrAddress": "0x5B47a68BE88979EE258faBdFB0aEc513C9350286"
+      "lmsrAddress": "0x1EAfA026F0578E1969d24cFAF73Ec8B5F383A9FD"
     },
     {
       "category": "Sports",
       "questionId": "0x8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c",
       "title": "Will an NBA team win 70+ games in the 2025-26 season?",
       "conditionId": "0xb471c969a9b7a47acee3e8f7bb1c25b84fa2b04164d72cfbd698e60b2bf455d1",
-      "lmsrAddress": "0x327b5594D2C18d99d4D24Acb3D16BAEC74ff3140"
+      "lmsrAddress": "0x88C5E5032f3F69cc154D9bCB6E18D100db70555b"
     },
     {
       "category": "Entertainment",
       "questionId": "0x9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d",
       "title": "Will a streaming service surpass Netflix in global subscribers by 2026?",
       "conditionId": "0xe73061ab9469624ca2dbc0c9d1ef7dcac7dce0835fd694e2dd0d866a3ff0af38",
-      "lmsrAddress": "0xf1Fa44b82B35a43f6fA892f1b9aFeA36A8dDa35A"
+      "lmsrAddress": "0x354aCC565Abf57E271a9925F5CAfB5CA1d28B7b2"
     },
     {
       "category": "Science",
       "questionId": "0xa0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1",
       "title": "Will SpaceX successfully land humans on Mars by 2030?",
       "conditionId": "0xfc9720100b578b42fe98719cd0a380623bf67f779b1017afb679717cf5608efb",
-      "lmsrAddress": "0x613556Ca81d59f4D8b3E2F2A96C72DdfD70F2f5d"
+      "lmsrAddress": "0x3B63D350d87F550Ba7c664B7655c998547eCe7a0"
     },
     {
       "category": "Science",
       "questionId": "0xb1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2",
       "title": "Will a quantum computer achieve quantum advantage in drug discovery by 2026?",
       "conditionId": "0x11fa8974962e1782a03b4beb43e2edb3de7fc2e90e97b74ab0f9431581bdb2c8",
-      "lmsrAddress": "0xF3E15ADE4734De39F3Cf6A7C0B78d9079eF9FBd1"
+      "lmsrAddress": "0x3FE37348cb0Cf454abCFA82Ce5E7713210485960"
     },
     {
       "category": "Business",
       "questionId": "0xc2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3",
       "title": "Will Tesla's market cap exceed $1 trillion in 2025?",
       "conditionId": "0xcccbd132273082b8bbc963d0f022e4c8fd05f773cb8abf09fbca22cbf7580199",
-      "lmsrAddress": "0x6C84c6f659221fC425D8e97b8a90183db90EEEF0"
+      "lmsrAddress": "0x31625445E87A944B6Cd26f163aaFaB70Df5CAf7F"
     },
     {
       "category": "Business",
       "questionId": "0xd3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4",
       "title": "Will any company achieve a $5 trillion market cap by 2026?",
       "conditionId": "0x873c1afc69b5e66b703d6f7ae8cc2bc9d6d993412c6756f93d993135f0d7abcc",
-      "lmsrAddress": "0x82c415027faA0866eaBDC00B1BaF85A9a1d22b09"
+      "lmsrAddress": "0xA3179EBcCf8ee0FecF8adb6F5ABfE1179d04E34e"
     },
     {
       "category": "Climate",
       "questionId": "0xe4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5",
       "title": "Will 2025 be recorded as the hottest year on record?",
       "conditionId": "0xb4bed1525f9f84fb6bccc59d6a78bc09bf68fe84538847d8e3c6913bda36e295",
-      "lmsrAddress": "0xe448672085a98C45Bed9fb10Bf8044F17e5c050c"
+      "lmsrAddress": "0x60Ff16501D19569086f198Ea88e0b1F56cD13124"
     },
     {
       "category": "Climate",
       "questionId": "0xf5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6",
       "title": "Will global renewable energy capacity exceed 50% by 2026?",
       "conditionId": "0xf775f9cfc94f2c19be7c774082f21add70efe9db1617ff2760a9f6a805e72d4a",
-      "lmsrAddress": "0x16a0Fc3dD51e91d9f79ad94B3CA9C89A44373D7e"
+      "lmsrAddress": "0x1447f600893Fe8AB2a2ccf2C587f91dAC2791c51"
     },
     {
       "category": "Climate",
       "questionId": "0x4b22fe478b95fdaa835ddddf631ab29f12900b62061e0c5fd8564ddb7b684333",
       "title": "Will the summer 2020 in Germany break again weather records?",
       "conditionId": "0xe1c5e35b1879a8d9c1409d1cb6312c650868f22f0ec5366d34eb1783a89c1fce",
-      "lmsrAddress": "0xBADA8945705c225413cCc70F5Bd8173E611A25AA"
+      "lmsrAddress": "0x327D7eAc48c9f1937cb31D6461E1044d37C7bcb8"
     }
   ],
   "network": "base-sepolia",
   "deployer": "0xE4452Cb39ad3Faa39434b9D768677B34Dc90D5dc",
-  "deployedAt": "1761235786",
+  "deployedAt": "1761241178",
   "contracts": {
-    "conditionalTokens": "0x1b92ea9aBcffD4b8A6D68e32A4503c58A976c342",
-    "collateralToken": "0x5128D5C94008Bb10F59c70bE6346662b26290371",
-    "lmsrMarketMakerFactory": "0xD1216e8802aC530c8bb615362453A511814E560F"
+    "conditionalTokens": "0x3b4da80374C8Ff903E5c014c606E97B6163950c1",
+    "collateralToken": "0xD32071cA9A10FF02A71066a62e5dC68f2cA89AF8",
+    "lmsrMarketMakerFactory": "0x90DEfb28C9549C7ACdef9B52C9c2c06e020BCE00"
   }
 }
