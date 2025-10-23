@@ -27,6 +27,13 @@ const Market: React.FC<MarketProps> = ({ web3, account, marketConfig }) => {
   const [selectedAmount, setSelectedAmount] = useState<string>('')
   const [selectedOutcomeToken, setSelectedOutcomeToken] = useState<number>(0)
   const [marketInfo, setMarketInfo] = useState<any>(undefined)
+  const [isOwner, setIsOwner] = useState<boolean>(false)
+  const [withdrawingFees, setWithdrawingFees] = useState<boolean>(false)
+  const [pausingMarket, setPausingMarket] = useState<boolean>(false)
+  const [resumingMarket, setResumingMarket] = useState<boolean>(false)
+  const [changingFee, setChangingFee] = useState<boolean>(false)
+  const [newFeeValue, setNewFeeValue] = useState<string>('')
+  const [currentFee, setCurrentFee] = useState<number>(0)
 
   useEffect(() => {
     const init = async () => {
@@ -38,6 +45,16 @@ const Market: React.FC<MarketProps> = ({ web3, account, marketConfig }) => {
         )
         marketMakersRepo = await loadMarketMakersRepo(web3, marketConfig.lmsrAddress, account)
         await getMarketInfo()
+
+        // Check if current account is the owner
+        const owner = await marketMakersRepo.owner()
+        console.log({ owner, account })
+        setIsOwner(owner.toLowerCase() === account.toLowerCase())
+
+        // Get current fee
+        const feeValue = await marketMakersRepo.fee()
+        setCurrentFee(feeValue)
+
         setIsConditionLoaded(true)
       } catch (err) {
         setIsConditionLoaded(false)
@@ -51,16 +68,24 @@ const Market: React.FC<MarketProps> = ({ web3, account, marketConfig }) => {
 
   const getMarketInfo = async () => {
     if (!process.env.REACT_APP_ORACLE_ADDRESS) return
+
+    // Default to binary outcome if outcomes not specified
+    const outcomeCount = marketConfig.outcomes?.length || 2
+    const defaultOutcomes = [
+      { title: 'Yes', short: 'Yes' },
+      { title: 'No', short: 'No' },
+    ]
+
     const collateral = await marketMakersRepo.getCollateralToken()
     const conditionId = getConditionId(
       process.env.REACT_APP_ORACLE_ADDRESS,
       marketConfig.questionId,
-      marketConfig.outcomes.length,
+      outcomeCount,
     )
     const payoutDenominator = await conditionalTokensRepo.payoutDenominator(conditionId)
 
     const outcomes = []
-    for (let outcomeIndex = 0; outcomeIndex < marketConfig.outcomes.length; outcomeIndex++) {
+    for (let outcomeIndex = 0; outcomeIndex < outcomeCount; outcomeIndex++) {
       const indexSet = (
         outcomeIndex === 0 ? 1 : parseInt(Math.pow(10, outcomeIndex).toString(), 2)
       ).toString()
@@ -77,9 +102,10 @@ const Market: React.FC<MarketProps> = ({ web3, account, marketConfig }) => {
         outcomeIndex,
       )
 
+      const outcomeData = marketConfig.outcomes?.[outcomeIndex] || defaultOutcomes[outcomeIndex]
       const outcome = {
         index: outcomeIndex,
-        title: marketConfig.outcomes[outcomeIndex].title,
+        title: outcomeData?.title || `Outcome ${outcomeIndex + 1}`,
         probability: new BigNumber(probability)
           .dividedBy(Math.pow(2, 64))
           .multipliedBy(100)
@@ -94,7 +120,7 @@ const Market: React.FC<MarketProps> = ({ web3, account, marketConfig }) => {
       lmsrAddress: marketConfig.lmsrAddress,
       title: marketConfig.title,
       category: marketConfig.category,
-      description: marketConfig.description,
+      description: marketConfig.description || '',
       outcomes,
       stage: MarketStage[await marketMakersRepo.stage()],
       questionId: marketConfig.questionId,
@@ -103,6 +129,10 @@ const Market: React.FC<MarketProps> = ({ web3, account, marketConfig }) => {
     }
 
     setMarketInfo(marketData)
+
+    // Update current fee
+    const feeValue = await marketMakersRepo.fee()
+    setCurrentFee(feeValue)
   }
 
   const buy = async () => {
@@ -119,21 +149,29 @@ const Market: React.FC<MarketProps> = ({ web3, account, marketConfig }) => {
 
     const cost = await marketMakersRepo.calcNetCost(outcomeTokenAmounts)
 
+    // Get current fee percentage and add dynamic slippage buffer
+    // Buffer = 1% base + (fee percentage * 0.2) to handle rounding with higher fees
+    // E.g., 5% fee = 1% + 1% = 2% buffer, 10% fee = 1% + 2% = 3% buffer
+    const feePercentage = new BigNumber(currentFee).dividedBy('10000000000000000').toNumber()
+    const slippageBuffer = 1 + 0.01 + feePercentage * 0.002 // Dynamic buffer based on fee
+    const costWithSlippage = new BigNumber(Math.ceil(cost * slippageBuffer))
+
     const collateralBalance = await collateral.contract.balanceOf(account)
-    if (cost.gt(collateralBalance)) {
-      // Need to deposit ETH to get WETH
-      await collateral.contract.deposit({ value: cost.toString(), from: account })
+    if (costWithSlippage.gt(collateralBalance)) {
+      // Need to deposit ETH to get WETH (use buffered amount)
+      await collateral.contract.deposit({ value: costWithSlippage.toString(), from: account })
     }
 
-    // Always approve the market maker to spend WETH
+    // Always approve the market maker to spend WETH (use buffered amount)
     const allowance = await collateral.contract.allowance(account, marketInfo.lmsrAddress)
-    if (new BigNumber(allowance).lt(cost)) {
-      await collateral.contract.approve(marketInfo.lmsrAddress, cost.toString(), {
+    if (new BigNumber(allowance).lt(costWithSlippage)) {
+      await collateral.contract.approve(marketInfo.lmsrAddress, costWithSlippage.toString(), {
         from: account,
       })
     }
 
-    const tx = await marketMakersRepo.trade(outcomeTokenAmounts, cost, account)
+    // Use the buffered cost as the collateral limit
+    const tx = await marketMakersRepo.trade(outcomeTokenAmounts, costWithSlippage, account)
     console.log({ tx })
 
     await getMarketInfo()
@@ -153,9 +191,17 @@ const Market: React.FC<MarketProps> = ({ web3, account, marketConfig }) => {
     const outcomeTokenAmounts = Array.from({ length: marketInfo.outcomes.length }, (v, i) =>
       i === selectedOutcomeToken ? formatedAmount.negated() : new BigNumber(0),
     )
-    const profit = (await marketMakersRepo.calcNetCost(outcomeTokenAmounts)).neg()
+    const profit = await marketMakersRepo.calcNetCost(outcomeTokenAmounts)
 
-    const tx = await marketMakersRepo.trade(outcomeTokenAmounts, profit, account)
+    // Get current fee percentage and add dynamic slippage buffer
+    // For selling, we accept slightly less to account for rounding
+    // Buffer = 1% base + (fee percentage * 0.2) to handle higher fees
+    const feePercentage = new BigNumber(currentFee).dividedBy('10000000000000000').toNumber()
+    const slippageBuffer = 1 - 0.01 - feePercentage * 0.002 // Dynamic buffer based on fee
+    const profitWithSlippage = new BigNumber(Math.floor(profit * slippageBuffer))
+
+    // Use the buffered profit as the collateral limit (minimum acceptable payout)
+    const tx = await marketMakersRepo.trade(outcomeTokenAmounts, profitWithSlippage, account)
     console.log({ tx })
 
     await getMarketInfo()
@@ -199,13 +245,177 @@ const Market: React.FC<MarketProps> = ({ web3, account, marketConfig }) => {
     await getMarketInfo()
   }
 
+  const withdrawFees = async () => {
+    if (!isOwner) {
+      alert('Only the market owner can withdraw fees')
+      return
+    }
+
+    setWithdrawingFees(true)
+    try {
+      const collateral = await marketMakersRepo.getCollateralToken()
+
+      // Get current fee balance in the market maker contract
+      const feeBalance = await collateral.contract.balanceOf(marketInfo.lmsrAddress)
+
+      if (new BigNumber(feeBalance).isZero()) {
+        alert('No fees available to withdraw')
+        setWithdrawingFees(false)
+        return
+      }
+
+      // Call withdrawFees on the market maker
+      const tx = await marketMakersRepo.withdrawFees(account)
+      console.log({ tx })
+
+      // Truffle contracts return receipt directly in tx.receipt or tx object itself
+      const receipt = tx.receipt || tx
+
+      // Parse the AMMFeeWithdrawal event to get the fees amount
+      let withdrawnAmount = feeBalance
+      if (receipt && receipt.logs && receipt.logs.length > 0) {
+        // Look for the AMMFeeWithdrawal event
+        const feeWithdrawalLog = receipt.logs.find((log: any) => {
+          // Event signature for AMMFeeWithdrawal(uint fees)
+          return (
+            log.topics &&
+            log.topics.length > 0 &&
+            log.topics[0] === '0xce1d35d26fbf6b3cc5cd924de10b5a52b08e484129ea7d93abc48d739fffe5b9'
+          )
+        })
+        if (feeWithdrawalLog && feeWithdrawalLog.data) {
+          withdrawnAmount = web3.eth.abi.decodeParameter('uint256', feeWithdrawalLog.data)
+        }
+      }
+
+      const formattedAmount = new BigNumber(withdrawnAmount)
+        .dividedBy(Math.pow(10, collateral.decimals))
+        .toFixed(4)
+
+      alert(`Successfully withdrew ${formattedAmount} WETH in fees!`)
+      await getMarketInfo()
+    } catch (err: any) {
+      console.error('Error withdrawing fees:', err)
+      if (err.message.includes('caller is not the owner')) {
+        alert('Error: Only the owner can withdraw fees')
+      } else {
+        alert(`Error withdrawing fees: ${err.message || 'Unknown error'}`)
+      }
+    } finally {
+      setWithdrawingFees(false)
+    }
+  }
+
+  const pauseMarket = async () => {
+    if (!isOwner) {
+      alert('Only the market owner can pause the market')
+      return
+    }
+
+    if (marketInfo.stage !== 'Running') {
+      alert('Market must be in Running state to pause')
+      return
+    }
+
+    setPausingMarket(true)
+    try {
+      const tx = await marketMakersRepo.pause(account)
+      console.log({ tx })
+      alert('Market paused successfully!')
+      await getMarketInfo()
+    } catch (err: any) {
+      console.error('Error pausing market:', err)
+      alert(`Error pausing market: ${err.message || 'Unknown error'}`)
+    } finally {
+      setPausingMarket(false)
+    }
+  }
+
+  const resumeMarket = async () => {
+    if (!isOwner) {
+      alert('Only the market owner can resume the market')
+      return
+    }
+
+    if (marketInfo.stage !== 'Paused') {
+      alert('Market must be in Paused state to resume')
+      return
+    }
+
+    setResumingMarket(true)
+    try {
+      const tx = await marketMakersRepo.resume(account)
+      console.log({ tx })
+      alert('Market resumed successfully!')
+      await getMarketInfo()
+    } catch (err: any) {
+      console.error('Error resuming market:', err)
+      alert(`Error resuming market: ${err.message || 'Unknown error'}`)
+    } finally {
+      setResumingMarket(false)
+    }
+  }
+
+  const handleChangeFee = async () => {
+    if (!isOwner) {
+      alert('Only the market owner can change fees')
+      return
+    }
+
+    if (marketInfo.stage !== 'Paused') {
+      alert('Market must be paused before changing fees')
+      return
+    }
+
+    if (!newFeeValue || parseFloat(newFeeValue) < 0 || parseFloat(newFeeValue) > 100) {
+      alert('Please enter a valid fee percentage between 0 and 100')
+      return
+    }
+
+    setChangingFee(true)
+    try {
+      // Convert percentage to the contract's fee format
+      // Contract uses uint64 where 10000000000000000 = 1%
+      // FEE_RANGE constant is 10^16 (10000000000000000)
+      // So 5% = 5 * 10^16
+      const feeRange = '10000000000000000' // 10^16
+      const newFeeInContract = new BigNumber(newFeeValue).multipliedBy(feeRange).toFixed(0)
+
+      // Pass as string to avoid JavaScript number overflow
+      const tx = await marketMakersRepo.changeFee(newFeeInContract, account)
+      console.log({ tx })
+
+      alert(`Fee changed to ${newFeeValue}% successfully!`)
+      setNewFeeValue('')
+      await getMarketInfo()
+    } catch (err: any) {
+      console.error('Error changing fee:', err)
+      alert(`Error changing fee: ${err.message || 'Unknown error'}`)
+    } finally {
+      setChangingFee(false)
+    }
+  }
+
   const isMarketClosed =
     isConditionLoaded && MarketStage[marketInfo.stage].toString() === MarketStage.Closed.toString()
+  const isMarketPaused =
+    isConditionLoaded && MarketStage[marketInfo.stage].toString() === MarketStage.Paused.toString()
+  const isMarketRunning =
+    isConditionLoaded && MarketStage[marketInfo.stage].toString() === MarketStage.Running.toString()
+
+  // Calculate current fee percentage for display
+  // Contract uses uint64 where 10^16 = 1%, so just divide by 10^16 to get percentage
+  const currentFeePercentage = new BigNumber(currentFee)
+    .dividedBy('10000000000000000') // Divide by 10^16 (FEE_RANGE) to get percentage
+    .toFixed(2)
+
   return (
     <Layout
       account={account}
       isConditionLoaded={isConditionLoaded}
       isMarketClosed={isMarketClosed}
+      isMarketPaused={isMarketPaused}
+      isMarketRunning={isMarketRunning}
       marketInfo={marketInfo}
       setSelectedAmount={setSelectedAmount}
       selectedAmount={selectedAmount}
@@ -216,6 +426,18 @@ const Market: React.FC<MarketProps> = ({ web3, account, marketConfig }) => {
       redeem={redeem}
       close={close}
       resolve={resolve}
+      isOwner={isOwner}
+      withdrawFees={withdrawFees}
+      withdrawingFees={withdrawingFees}
+      pauseMarket={pauseMarket}
+      pausingMarket={pausingMarket}
+      resumeMarket={resumeMarket}
+      resumingMarket={resumingMarket}
+      handleChangeFee={handleChangeFee}
+      changingFee={changingFee}
+      newFeeValue={newFeeValue}
+      setNewFeeValue={setNewFeeValue}
+      currentFeePercentage={currentFeePercentage}
     />
   )
 }

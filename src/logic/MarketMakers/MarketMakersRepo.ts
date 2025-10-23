@@ -51,6 +51,28 @@ class MarketMakersRepo {
     return this.lmsrMarketMaker.trade(tradeAmounts, collateralLimit, { from })
   }
 
+  withdrawFees = async (from: string) => {
+    // withdrawFees() takes no parameters in the contract
+    // Call it as a transaction (not a call) since it modifies state
+    return this.lmsrMarketMaker.withdrawFees.sendTransaction({ from })
+  }
+
+  pause = async (from: string) => {
+    return this.lmsrMarketMaker.pause({ from })
+  }
+
+  resume = async (from: string) => {
+    return this.lmsrMarketMaker.resume({ from })
+  }
+
+  changeFee = async (newFee: string | number, from: string) => {
+    return this.lmsrMarketMaker.changeFee(newFee, { from })
+  }
+
+  fee = async () => {
+    return this.lmsrMarketMaker.fee()
+  }
+
   // ...
 }
 

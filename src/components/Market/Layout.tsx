@@ -34,6 +34,8 @@ type LayoutProps = {
   account: string
   isConditionLoaded: boolean
   isMarketClosed: boolean
+  isMarketPaused: boolean
+  isMarketRunning: boolean
   marketInfo: any
   setSelectedAmount: any
   selectedAmount: string
@@ -44,6 +46,18 @@ type LayoutProps = {
   redeem: any
   close: any
   resolve: any
+  isOwner: boolean
+  withdrawFees: any
+  withdrawingFees: boolean
+  pauseMarket: any
+  pausingMarket: boolean
+  resumeMarket: any
+  resumingMarket: boolean
+  handleChangeFee: any
+  changingFee: boolean
+  newFeeValue: string
+  setNewFeeValue: any
+  currentFeePercentage: string
 }
 
 const TradingForm: React.FC<TradingFormProps> = ({
@@ -153,6 +167,8 @@ const Layout: React.FC<LayoutProps> = ({
   account,
   isConditionLoaded,
   isMarketClosed,
+  isMarketPaused,
+  isMarketRunning,
   marketInfo,
   setSelectedAmount,
   selectedAmount,
@@ -163,6 +179,18 @@ const Layout: React.FC<LayoutProps> = ({
   redeem,
   close,
   resolve,
+  isOwner,
+  withdrawFees,
+  withdrawingFees,
+  pauseMarket,
+  pausingMarket,
+  resumeMarket,
+  resumingMarket,
+  handleChangeFee,
+  changingFee,
+  newFeeValue,
+  setNewFeeValue,
+  currentFeePercentage,
 }) => {
   return (
     <Paper className={styles.condition}>
@@ -236,6 +264,86 @@ const Layout: React.FC<LayoutProps> = ({
             buy={buy}
             sell={sell}
           />
+
+          {isOwner && (
+            <>
+              <h3>Owner actions:</h3>
+              <div style={{ marginBottom: '20px' }}>
+                <div style={{ marginBottom: '10px', fontSize: '14px', color: '#666' }}>
+                  Current Fee: <strong>{currentFeePercentage}%</strong>
+                </div>
+                <div className={styles.actions}>
+                  <Button
+                    variant="contained"
+                    onClick={withdrawFees}
+                    disabled={withdrawingFees}
+                    style={{ backgroundColor: '#2196f3', marginRight: '10px' }}
+                  >
+                    {withdrawingFees ? 'Withdrawing...' : 'Withdraw Fees'}
+                  </Button>
+
+                  {isMarketRunning && (
+                    <Button
+                      variant="contained"
+                      onClick={pauseMarket}
+                      disabled={pausingMarket}
+                      style={{ backgroundColor: '#ff9800', marginRight: '10px' }}
+                    >
+                      {pausingMarket ? 'Pausing...' : 'Pause Market'}
+                    </Button>
+                  )}
+
+                  {isMarketPaused && (
+                    <Button
+                      variant="contained"
+                      onClick={resumeMarket}
+                      disabled={resumingMarket}
+                      style={{ backgroundColor: '#4caf50', marginRight: '10px' }}
+                    >
+                      {resumingMarket ? 'Resuming...' : 'Resume Market'}
+                    </Button>
+                  )}
+                </div>
+
+                {isMarketPaused && (
+                  <div
+                    style={{
+                      marginTop: '15px',
+                      padding: '15px',
+                      backgroundColor: '#fff3cd',
+                      borderRadius: '5px',
+                    }}
+                  >
+                    <h4 style={{ marginTop: 0, marginBottom: '10px' }}>Change Fee</h4>
+                    <p style={{ fontSize: '12px', marginBottom: '10px' }}>
+                      Market must be paused to change fees. Enter new fee percentage (0-100):
+                    </p>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <TextField
+                        variant="outlined"
+                        label="New Fee %"
+                        type="number"
+                        value={newFeeValue}
+                        onChange={(e) => setNewFeeValue(e.target.value)}
+                        disabled={changingFee}
+                        style={{ width: '150px' }}
+                        inputProps={{ min: 0, max: 100, step: 0.01 }}
+                      />
+                      <Button
+                        variant="contained"
+                        onClick={handleChangeFee}
+                        disabled={changingFee || !newFeeValue}
+                        style={{ backgroundColor: '#9c27b0' }}
+                      >
+                        {changingFee ? 'Changing...' : 'Change Fee'}
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </>
+          )}
+
           {account === process.env.REACT_APP_OPERATOR_ADDRESS && (
             <OperatorActions isMarketClosed={isMarketClosed} close={close} />
           )}
