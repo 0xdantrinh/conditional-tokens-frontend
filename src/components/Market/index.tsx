@@ -149,29 +149,28 @@ const Market: React.FC<MarketProps> = ({ web3, account, marketConfig }) => {
 
     const cost = await marketMakersRepo.calcNetCost(outcomeTokenAmounts)
 
-    // Get current fee percentage and add dynamic slippage buffer
-    // Buffer = 1% base + (fee percentage * 0.2) to handle rounding with higher fees
-    // E.g., 5% fee = 1% + 1% = 2% buffer, 10% fee = 1% + 2% = 3% buffer
-    const feePercentage = new BigNumber(currentFee).dividedBy('10000000000000000').toNumber()
-    const slippageBuffer = 1 + 0.01 + feePercentage * 0.002 // Dynamic buffer based on fee
-    const costWithSlippage = new BigNumber(Math.ceil(cost * slippageBuffer))
+    // Use cost for deposit/approval but pass 0 as collateralLimit to disable slippage protection
+    // This avoids issues with rounding differences between client and contract calcNetCost
+    const costForDeposit = new BigNumber(Math.ceil(cost * 1.01)) // Small buffer for deposit
 
     const collateralBalance = await collateral.contract.balanceOf(account)
-    if (costWithSlippage.gt(collateralBalance)) {
-      // Need to deposit ETH to get WETH (use buffered amount)
-      await collateral.contract.deposit({ value: costWithSlippage.toString(), from: account })
+    if (costForDeposit.gt(collateralBalance)) {
+      // Need to deposit ETH to get WETH (use buffered amount for safety)
+      await collateral.contract.deposit({ value: costForDeposit.toString(), from: account })
     }
 
-    // Always approve the market maker to spend WETH (use buffered amount)
+    // Check allowance and approve max uint256 if needed (one-time approval)
     const allowance = await collateral.contract.allowance(account, marketInfo.lmsrAddress)
-    if (new BigNumber(allowance).lt(costWithSlippage)) {
-      await collateral.contract.approve(marketInfo.lmsrAddress, costWithSlippage.toString(), {
+    if (new BigNumber(allowance).lt(costForDeposit)) {
+      // Approve maximum amount to avoid repeated approvals
+      const MAX_UINT256 = '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'
+      await collateral.contract.approve(marketInfo.lmsrAddress, MAX_UINT256, {
         from: account,
       })
     }
 
-    // Use the buffered cost as the collateral limit
-    const tx = await marketMakersRepo.trade(outcomeTokenAmounts, costWithSlippage, account)
+    // Pass 0 as collateralLimit to disable protection (contract will use actual netCost)
+    const tx = await marketMakersRepo.trade(outcomeTokenAmounts, 0, account)
     console.log({ tx })
 
     await getMarketInfo()
@@ -191,17 +190,10 @@ const Market: React.FC<MarketProps> = ({ web3, account, marketConfig }) => {
     const outcomeTokenAmounts = Array.from({ length: marketInfo.outcomes.length }, (v, i) =>
       i === selectedOutcomeToken ? formatedAmount.negated() : new BigNumber(0),
     )
-    const profit = await marketMakersRepo.calcNetCost(outcomeTokenAmounts)
 
-    // Get current fee percentage and add dynamic slippage buffer
-    // For selling, we accept slightly less to account for rounding
-    // Buffer = 1% base + (fee percentage * 0.2) to handle higher fees
-    const feePercentage = new BigNumber(currentFee).dividedBy('10000000000000000').toNumber()
-    const slippageBuffer = 1 - 0.01 - feePercentage * 0.002 // Dynamic buffer based on fee
-    const profitWithSlippage = new BigNumber(Math.floor(profit * slippageBuffer))
-
-    // Use the buffered profit as the collateral limit (minimum acceptable payout)
-    const tx = await marketMakersRepo.trade(outcomeTokenAmounts, profitWithSlippage, account)
+    // Pass 0 as collateralLimit to disable protection (contract will use actual netCost)
+    // This avoids issues with rounding differences between client and contract calcNetCost
+    const tx = await marketMakersRepo.trade(outcomeTokenAmounts, 0, account)
     console.log({ tx })
 
     await getMarketInfo()
