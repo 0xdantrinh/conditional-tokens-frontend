@@ -177,9 +177,6 @@ export default class UmaOracleRepo {
         )
         .call()
 
-      console.log('Raw oracle request:', request)
-      console.log('Proposed price at index 5:', request[5])
-
       return {
         proposer: request[0],
         disputer: request[1],
@@ -214,6 +211,24 @@ export default class UmaOracleRepo {
         proposedPrice, // proposedPrice
       )
       .send({ from })
+  }
+
+  // Dispute price on OptimisticOracleV2
+  disputePrice = async (questionID: string, from?: string): Promise<any> => {
+    const questionData = await this.getQuestion(questionID)
+
+    // Use the connected account if 'from' is not provided
+    const accounts = await this.web3.eth.getAccounts()
+    const fromAddress = from || accounts[0]
+
+    return await this.optimisticOracle.methods
+      .disputePrice(
+        UMA_CONFIG.BASE_SEPOLIA.umaCtfAdapter, // requester
+        UMA_CONFIG.BASE_SEPOLIA.priceIdentifier, // identifier
+        questionData.requestTimestamp, // timestamp
+        questionData.ancillaryData, // ancillaryData
+      )
+      .send({ from: fromAddress })
   }
 
   // Helper to fetch events in chunks to avoid block range limits

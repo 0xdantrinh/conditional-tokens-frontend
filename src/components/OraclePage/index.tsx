@@ -4,6 +4,7 @@ import { UmaOracleRepo } from 'src/logic/UmaOracle'
 import { UMA_CONFIG } from 'src/conf/uma'
 import QuestionDetailsModal from './QuestionDetailsModal'
 import ProposeAnswerModal from './ProposeAnswerModal'
+import DisputeModal from './DisputeModal'
 import { LivenessCountdown } from './LivenessCountdown'
 import { EnrichedQuestion, StatusFilter } from './types'
 import styles from './style.module.css'
@@ -23,6 +24,8 @@ const OraclePage: React.FC<OraclePageProps> = ({ web3, account }) => {
   const [showModal, setShowModal] = useState(false)
   const [showProposeModal, setShowProposeModal] = useState(false)
   const [questionToPropose, setQuestionToPropose] = useState<EnrichedQuestion | null>(null)
+  const [showDisputeModal, setShowDisputeModal] = useState(false)
+  const [questionToDispute, setQuestionToDispute] = useState<EnrichedQuestion | null>(null)
 
   // Load all questions
   const loadQuestions = useCallback(async () => {
@@ -152,7 +155,6 @@ const OraclePage: React.FC<OraclePageProps> = ({ web3, account }) => {
   // Format proposed answer value
   const formatProposedAnswer = (proposedPrice: string) => {
     // YES = 1e18, NO = 0, UNDECIDED = 0.5e18
-    console.log('Proposed price raw:', proposedPrice)
     const value = proposedPrice
     if (value === '1000000000000000000') return 'YES ✅'
     if (value === '0') return 'NO ❌'
@@ -335,36 +337,72 @@ const OraclePage: React.FC<OraclePageProps> = ({ web3, account }) => {
               )}
 
               {question.status === 'Proposed - Pending Liveness' && question.oracleRequest && (
-                <div
-                  style={{
-                    marginTop: '15px',
-                    padding: '12px',
-                    backgroundColor: '#fffbeb',
-                    borderRadius: '8px',
-                    border: '1px solid #fbbf24',
-                  }}
-                >
-                  <div style={{ marginBottom: '8px' }}>
-                    <strong>Proposed Answer:</strong>{' '}
-                    {formatProposedAnswer(question.oracleRequest.proposedPrice)}
+                <div style={{ marginTop: '15px' }}>
+                  <div
+                    style={{
+                      padding: '12px',
+                      backgroundColor: '#fffbeb',
+                      borderRadius: '8px',
+                      border: '1px solid #fbbf24',
+                    }}
+                  >
+                    <div style={{ marginBottom: '8px' }}>
+                      <strong>Proposed Answer:</strong>{' '}
+                      {formatProposedAnswer(question.oracleRequest.proposedPrice)}
+                    </div>
+                    <div style={{ marginBottom: '8px' }}>
+                      <strong>Proposed by:</strong>{' '}
+                      {truncateAddress(question.oracleRequest.proposer)}
+                      <button
+                        className={styles.copyButton}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          copyToClipboard(question.oracleRequest!.proposer)
+                        }}
+                        title="Copy Proposer Address"
+                      >
+                        📋
+                      </button>
+                    </div>
+                    <div>
+                      <strong>Liveness remaining:</strong>{' '}
+                      <LivenessCountdown expirationTime={question.oracleRequest.expirationTime} />
+                    </div>
                   </div>
-                  <div style={{ marginBottom: '8px' }}>
-                    <strong>Proposed by:</strong> {truncateAddress(question.oracleRequest.proposer)}
-                    <button
-                      className={styles.copyButton}
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        copyToClipboard(question.oracleRequest!.proposer)
-                      }}
-                      title="Copy Proposer Address"
-                    >
-                      📋
-                    </button>
-                  </div>
-                  <div>
-                    <strong>Liveness remaining:</strong>{' '}
-                    <LivenessCountdown expirationTime={question.oracleRequest.expirationTime} />
-                  </div>
+
+                  {/* Dispute button - only show if not the proposer and still in liveness */}
+                  {(() => {
+                    const isProposer =
+                      question.oracleRequest.proposer.toLowerCase() === account.toLowerCase()
+                    const hasExpired =
+                      parseInt(question.oracleRequest.expirationTime) <= Date.now() / 1000
+                    const canDispute = !isProposer && !hasExpired
+
+                    console.log('Dispute check:', {
+                      questionID: question.questionID.slice(0, 10),
+                      proposer: question.oracleRequest.proposer,
+                      account: account,
+                      isProposer,
+                      expirationTime: parseInt(question.oracleRequest.expirationTime),
+                      currentTime: Date.now() / 1000,
+                      hasExpired,
+                      canDispute,
+                    })
+
+                    return canDispute ? (
+                      <button
+                        className={styles.disputeButton}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setQuestionToDispute(question)
+                          setShowDisputeModal(true)
+                        }}
+                        style={{ marginTop: '10px', width: '100%' }}
+                      >
+                        ⚠️ Dispute This Answer
+                      </button>
+                    ) : null
+                  })()}
                 </div>
               )}
 
@@ -401,6 +439,25 @@ const OraclePage: React.FC<OraclePageProps> = ({ web3, account }) => {
           onProposed={() => {
             setShowProposeModal(false)
             setQuestionToPropose(null)
+            loadQuestions() // Reload to update status
+          }}
+        />
+      )}
+
+      {/* Dispute Modal */}
+      {showDisputeModal && questionToDispute && (
+        <DisputeModal
+          question={questionToDispute}
+          account={account}
+          oracleRepo={oracleRepo}
+          web3={web3}
+          onClose={() => {
+            setShowDisputeModal(false)
+            setQuestionToDispute(null)
+          }}
+          onDisputed={() => {
+            setShowDisputeModal(false)
+            setQuestionToDispute(null)
             loadQuestions() // Reload to update status
           }}
         />

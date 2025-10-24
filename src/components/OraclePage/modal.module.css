@@ -331,6 +331,25 @@
   font-weight: 500;
 }
 
+.warningBox {
+  background-color: #fff3e0;
+  border: 2px solid #ff9800;
+  border-radius: 8px;
+  padding: 20px;
+  margin: 20px 0;
+  text-align: center;
+}
+
+.warningBox p {
+  margin: 0 0 10px 0;
+  color: #e65100;
+}
+
+.warningBox ul {
+  text-align: left;
+  color: #424242;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .modalContent {

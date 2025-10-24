@@ -206,6 +206,26 @@
   transform: scale(0.98);
 }
 
+.disputeButton {
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.disputeButton:hover {
+  background-color: #dc2626;
+}
+
+.disputeButton:active {
+  transform: scale(0.98);
+}
+
 .readyIndicator {
   margin-top: 15px;
   padding: 12px;
