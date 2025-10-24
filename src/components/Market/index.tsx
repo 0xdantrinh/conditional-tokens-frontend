@@ -44,6 +44,7 @@ const Market: React.FC<MarketProps> = ({ web3, account, marketConfig }) => {
   const [removingLiquidity, setRemovingLiquidity] = useState<boolean>(false)
   const [liquidityAmount, setLiquidityAmount] = useState<string>('')
   const [sharesToRemove, setSharesToRemove] = useState<string>('')
+  const [redeemingPositions, setRedeemingPositions] = useState<boolean>(false)
 
   // WETH preparation state
   const [ethBalance, setEthBalance] = useState<string>('0')
@@ -360,7 +361,7 @@ const Market: React.FC<MarketProps> = ({ web3, account, marketConfig }) => {
 
       // Check allowance and approve if needed
       const allowance = await collateral.contract.methods
-        .allowance(account, marketInfo.lmsrAddress)
+        .allowance(account, marketConfig.lmsrAddress)
         .call()
       if (new BigNumber(allowance).lt(amount)) {
         alert(
@@ -386,35 +387,58 @@ const Market: React.FC<MarketProps> = ({ web3, account, marketConfig }) => {
     }
   }
 
-  const removeLiquidity = async () => {
-    if (!sharesToRemove || parseFloat(sharesToRemove) <= 0) {
-      alert('Please enter a valid amount of shares')
+  const redeemMarketPositions = async () => {
+    if (marketInfo.stage !== 'Closed') {
+      alert('Cannot redeem positions - market must be closed first')
       return
     }
 
-    if (marketInfo.stage !== 'Paused') {
-      alert('Cannot remove liquidity - market must be paused by owner first')
+    setRedeemingPositions(true)
+    try {
+      const tx = await marketMakersRepo.redeemPositions(account)
+      console.log({ tx })
+
+      alert('Market positions redeemed successfully! LPs can now withdraw their liquidity.')
+      await getMarketInfo()
+      await loadLPInfo()
+    } catch (err: any) {
+      console.error('Error redeeming market positions:', err)
+      // Check if it's the "result not received" error
+      if (err.message && err.message.includes('result for condition not received yet')) {
+        alert(
+          'Cannot redeem yet: Oracle has not reported the result. Please wait for the market to be resolved by the oracle.',
+        )
+      } else {
+        alert(`Error redeeming positions: ${err.message || 'Unknown error'}`)
+      }
+    } finally {
+      setRedeemingPositions(false)
+    }
+  }
+
+  const withdrawLiquidity = async () => {
+    if (parseFloat(userShares) <= 0) {
+      alert('You have no liquidity shares to withdraw')
       return
     }
 
-    const shares = new BigNumber(sharesToRemove)
-    if (shares.gt(userShares)) {
-      alert('Insufficient shares')
+    if (marketInfo.stage !== 'Closed') {
+      alert('Cannot withdraw liquidity - market must be closed and resolved first')
       return
     }
 
     setRemovingLiquidity(true)
     try {
-      const tx = await marketMakersRepo.removeLiquidity(sharesToRemove, account)
+      const tx = await marketMakersRepo.withdrawLiquidity(account)
       console.log({ tx })
 
-      alert('Liquidity removed successfully!')
+      alert('Liquidity withdrawn successfully!')
       setSharesToRemove('')
       await getMarketInfo()
       await loadLPInfo()
     } catch (err: any) {
-      console.error('Error removing liquidity:', err)
-      alert(`Error removing liquidity: ${err.message || 'Unknown error'}`)
+      console.error('Error withdrawing liquidity:', err)
+      alert(`Error withdrawing liquidity: ${err.message || 'Unknown error'}`)
     } finally {
       setRemovingLiquidity(false)
     }
@@ -448,12 +472,12 @@ const Market: React.FC<MarketProps> = ({ web3, account, marketConfig }) => {
 
     // Check allowance and approve max uint256 if needed (one-time approval)
     const allowance = await collateral.contract.methods
-      .allowance(account, marketInfo.lmsrAddress)
+      .allowance(account, marketConfig.lmsrAddress)
       .call()
     if (new BigNumber(allowance).lt(costForDeposit)) {
       // Approve maximum amount to avoid repeated approvals
       const MAX_UINT256 = '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'
-      await collateral.contract.methods.approve(marketInfo.lmsrAddress, MAX_UINT256).send({
+      await collateral.contract.methods.approve(marketConfig.lmsrAddress, MAX_UINT256).send({
         from: account,
       })
     }
@@ -471,9 +495,12 @@ const Market: React.FC<MarketProps> = ({ web3, account, marketConfig }) => {
       new BigNumber(Math.pow(10, collateral.decimals)),
     )
 
-    const isApproved = await conditionalTokensRepo.isApprovedForAll(account, marketInfo.lmsrAddress)
+    const isApproved = await conditionalTokensRepo.isApprovedForAll(
+      account,
+      marketConfig.lmsrAddress,
+    )
     if (!isApproved) {
-      await conditionalTokensRepo.setApprovalForAll(marketInfo.lmsrAddress, true, account)
+      await conditionalTokensRepo.setApprovalForAll(marketConfig.lmsrAddress, true, account)
     }
 
     const outcomeTokenAmounts = Array.from({ length: marketInfo.outcomes.length }, (v, i) =>
@@ -537,7 +564,9 @@ const Market: React.FC<MarketProps> = ({ web3, account, marketConfig }) => {
       const collateral = await marketMakersRepo.getCollateralToken()
 
       // Get current fee balance in the market maker contract
-      const feeBalance = await collateral.contract.methods.balanceOf(marketInfo.lmsrAddress).call()
+      const feeBalance = await collateral.contract.methods
+        .balanceOf(marketConfig.lmsrAddress)
+        .call()
 
       if (new BigNumber(feeBalance).isZero()) {
         alert('No fees available to withdraw')
@@ -725,7 +754,9 @@ const Market: React.FC<MarketProps> = ({ web3, account, marketConfig }) => {
       sharePercentage={sharePercentage}
       addLiquidity={addLiquidity}
       addingLiquidity={addingLiquidity}
-      removeLiquidity={removeLiquidity}
+      redeemMarketPositions={redeemMarketPositions}
+      redeemingPositions={redeemingPositions}
+      withdrawLiquidity={withdrawLiquidity}
       removingLiquidity={removingLiquidity}
       liquidityAmount={liquidityAmount}
       setLiquidityAmount={setLiquidityAmount}

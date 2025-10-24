@@ -78,8 +78,12 @@ class MarketMakersRepo {
     return this.lmsrMarketMaker.methods.addLiquidity(amount).send({ from })
   }
 
-  removeLiquidity = async (shares: string | number, from: string) => {
-    return this.lmsrMarketMaker.methods.removeLiquidity(shares).send({ from })
+  withdrawLiquidity = async (from: string) => {
+    return this.lmsrMarketMaker.methods.withdrawLiquidity().send({ from })
+  }
+
+  redeemPositions = async (from: string) => {
+    return this.lmsrMarketMaker.methods.redeemPositions().send({ from })
   }
 
   getPendingFees = async (provider: string) => {

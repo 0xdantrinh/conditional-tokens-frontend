@@ -64,7 +64,9 @@ type LayoutProps = {
   sharePercentage: string
   addLiquidity: any
   addingLiquidity: boolean
-  removeLiquidity: any
+  redeemMarketPositions: any
+  redeemingPositions: boolean
+  withdrawLiquidity: any
   removingLiquidity: boolean
   liquidityAmount: string
   setLiquidityAmount: any
@@ -222,7 +224,9 @@ const Layout: React.FC<LayoutProps> = ({
   sharePercentage,
   addLiquidity,
   addingLiquidity,
-  removeLiquidity,
+  redeemMarketPositions,
+  redeemingPositions,
+  withdrawLiquidity,
   removingLiquidity,
   liquidityAmount,
   setLiquidityAmount,
@@ -323,15 +327,6 @@ const Layout: React.FC<LayoutProps> = ({
                   Current Fee: <strong>{currentFeePercentage}%</strong>
                 </div>
                 <div className={styles.actions}>
-                  <Button
-                    variant="contained"
-                    onClick={withdrawFees}
-                    disabled={withdrawingFees}
-                    style={{ backgroundColor: '#2196f3', marginRight: '10px' }}
-                  >
-                    {withdrawingFees ? 'Withdrawing...' : 'Withdraw Fees'}
-                  </Button>
-
                   {isMarketRunning && (
                     <Button
                       variant="contained"
@@ -467,149 +462,141 @@ const Layout: React.FC<LayoutProps> = ({
             </>
           )}
 
-          {/* WETH Preparation Widget */}
-          {isMarketRunning && (
-            <>
-              <hr style={{ margin: '20px 0', border: 'none', borderTop: '1px solid #ddd' }} />
-              <div
-                style={{
-                  marginTop: '20px',
-                  padding: '15px',
-                  backgroundColor: '#f5f5f5',
-                  borderRadius: '8px',
-                }}
-              >
-                <h3 style={{ marginBottom: '15px', color: '#9c27b0' }}>💰 WETH Preparation</h3>
-                <p style={{ fontSize: '14px', opacity: 0.8, marginBottom: '15px' }}>
-                  Before adding liquidity, ensure you have enough WETH (Wrapped ETH) and approve the
-                  MarketMaker contract.
-                </p>
+          {/* WETH Preparation Widget - Always available */}
+          <>
+            <hr style={{ margin: '20px 0', border: 'none', borderTop: '1px solid #ddd' }} />
+            <div
+              style={{
+                marginTop: '20px',
+                padding: '15px',
+                backgroundColor: '#f5f5f5',
+                borderRadius: '8px',
+              }}
+            >
+              <h3 style={{ marginBottom: '15px', color: '#9c27b0' }}>💰 WETH Preparation</h3>
+              <p style={{ fontSize: '14px', opacity: 0.8, marginBottom: '15px' }}>
+                Before adding liquidity, ensure you have enough WETH (Wrapped ETH) and approve the
+                MarketMaker contract.
+              </p>
 
-                {/* Balance Display */}
-                <div
-                  style={{ display: 'flex', gap: '20px', marginBottom: '15px', fontSize: '14px' }}
-                >
-                  <div>
-                    <strong>ETH Balance:</strong>{' '}
-                    {(parseFloat(ethBalance || '0') / 1e18).toFixed(4)} ETH
-                  </div>
-                  <div>
-                    <strong>WETH Balance:</strong>{' '}
-                    <span
-                      style={{ color: parseFloat(wethBalance || '0') > 0 ? '#4caf50' : '#666' }}
-                    >
-                      {(parseFloat(wethBalance || '0') / 1e18).toFixed(4)} WETH
-                    </span>
-                  </div>
+              {/* Balance Display */}
+              <div style={{ display: 'flex', gap: '20px', marginBottom: '15px', fontSize: '14px' }}>
+                <div>
+                  <strong>ETH Balance:</strong> {(parseFloat(ethBalance || '0') / 1e18).toFixed(4)}{' '}
+                  ETH
                 </div>
-
-                {/* Wrap ETH Section */}
-                <div style={{ marginBottom: '15px' }}>
-                  <h4 style={{ marginBottom: '10px', fontSize: '14px' }}>
-                    Step 1a: Wrap ETH → WETH
-                  </h4>
-                  <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                    <TextField
-                      variant="filled"
-                      label="ETH Amount to Wrap"
-                      type="number"
-                      value={wrapAmount}
-                      onChange={(e) => setWrapAmount(e.target.value)}
-                      disabled={wrappingEth}
-                      style={{ flex: 1 }}
-                      inputProps={{ min: 0, step: 0.001 }}
-                    />
-                    <Button
-                      variant="contained"
-                      onClick={wrapEth}
-                      disabled={wrappingEth || !wrapAmount || parseFloat(wrapAmount) <= 0}
-                      style={{ backgroundColor: '#9c27b0', color: 'white' }}
-                    >
-                      {wrappingEth ? 'Wrapping...' : 'Wrap ETH'}
-                    </Button>
-                  </div>
-                </div>
-
-                {/* Unwrap WETH Section */}
-                <div style={{ marginBottom: '15px' }}>
-                  <h4 style={{ marginBottom: '10px', fontSize: '14px' }}>
-                    Step 1b: Unwrap WETH → ETH (Optional)
-                  </h4>
-                  <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                    <TextField
-                      variant="filled"
-                      label="WETH Amount to Unwrap"
-                      type="number"
-                      value={unwrapAmount}
-                      onChange={(e) => setUnwrapAmount(e.target.value)}
-                      disabled={unwrappingWeth}
-                      style={{ flex: 1 }}
-                      inputProps={{ min: 0, step: 0.001 }}
-                    />
-                    <Button
-                      variant="contained"
-                      onClick={unwrapWeth}
-                      disabled={unwrappingWeth || !unwrapAmount || parseFloat(unwrapAmount) <= 0}
-                      style={{ backgroundColor: '#673ab7', color: 'white' }}
-                    >
-                      {unwrappingWeth ? 'Unwrapping...' : 'Unwrap WETH'}
-                    </Button>
-                  </div>
-                  <div style={{ fontSize: '12px', opacity: 0.7, marginTop: '5px' }}>
-                    💡 Convert WETH back to ETH if you have excess WETH
-                  </div>
-                </div>
-
-                {/* Approve WETH Section */}
-                <div style={{ marginBottom: '10px' }}>
-                  <h4 style={{ marginBottom: '10px', fontSize: '14px' }}>
-                    Step 2: Approve WETH Spending
-                  </h4>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <div style={{ flex: 1, fontSize: '13px' }}>
-                      <strong>Current Allowance:</strong>{' '}
-                      <span
-                        style={{
-                          color: parseFloat(wethAllowance || '0') > 0 ? '#4caf50' : '#ff9800',
-                          fontWeight: 'bold',
-                        }}
-                      >
-                        {parseFloat(wethAllowance || '0') > 1e30
-                          ? '∞ (Unlimited)'
-                          : `${(parseFloat(wethAllowance || '0') / 1e18).toFixed(4)} WETH`}
-                      </span>
-                    </div>
-                    <Button
-                      variant="contained"
-                      onClick={approveWeth}
-                      disabled={
-                        approvingWeth ||
-                        parseFloat(wethAllowance || '0') > 1e30 ||
-                        !liquidityAmount ||
-                        parseFloat(liquidityAmount) <= 0
-                      }
-                      style={{
-                        backgroundColor:
-                          parseFloat(wethAllowance || '0') > 1e30 ? '#4caf50' : '#ff9800',
-                        color: 'white',
-                      }}
-                    >
-                      {approvingWeth
-                        ? 'Approving...'
-                        : parseFloat(wethAllowance || '0') > 1e30
-                        ? '✓ Approved'
-                        : 'Approve WETH'}
-                    </Button>
-                  </div>
-                  {(!liquidityAmount || parseFloat(liquidityAmount) <= 0) && (
-                    <div style={{ fontSize: '12px', color: '#ff9800', marginTop: '5px' }}>
-                      ⚠️ Enter liquidity amount below first
-                    </div>
-                  )}
+                <div>
+                  <strong>WETH Balance:</strong>{' '}
+                  <span style={{ color: parseFloat(wethBalance || '0') > 0 ? '#4caf50' : '#666' }}>
+                    {(parseFloat(wethBalance || '0') / 1e18).toFixed(4)} WETH
+                  </span>
                 </div>
               </div>
-            </>
-          )}
+
+              {/* Wrap ETH Section */}
+              <div style={{ marginBottom: '15px' }}>
+                <h4 style={{ marginBottom: '10px', fontSize: '14px' }}>Step 1a: Wrap ETH → WETH</h4>
+                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                  <TextField
+                    variant="filled"
+                    label="ETH Amount to Wrap"
+                    type="number"
+                    value={wrapAmount}
+                    onChange={(e) => setWrapAmount(e.target.value)}
+                    disabled={wrappingEth}
+                    style={{ flex: 1 }}
+                    inputProps={{ min: 0, step: 0.001 }}
+                  />
+                  <Button
+                    variant="contained"
+                    onClick={wrapEth}
+                    disabled={wrappingEth || !wrapAmount || parseFloat(wrapAmount) <= 0}
+                    style={{ backgroundColor: '#9c27b0', color: 'white' }}
+                  >
+                    {wrappingEth ? 'Wrapping...' : 'Wrap ETH'}
+                  </Button>
+                </div>
+              </div>
+
+              {/* Unwrap WETH Section */}
+              <div style={{ marginBottom: '15px' }}>
+                <h4 style={{ marginBottom: '10px', fontSize: '14px' }}>
+                  Step 1b: Unwrap WETH → ETH (Optional)
+                </h4>
+                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                  <TextField
+                    variant="filled"
+                    label="WETH Amount to Unwrap"
+                    type="number"
+                    value={unwrapAmount}
+                    onChange={(e) => setUnwrapAmount(e.target.value)}
+                    disabled={unwrappingWeth}
+                    style={{ flex: 1 }}
+                    inputProps={{ min: 0, step: 0.001 }}
+                  />
+                  <Button
+                    variant="contained"
+                    onClick={unwrapWeth}
+                    disabled={unwrappingWeth || !unwrapAmount || parseFloat(unwrapAmount) <= 0}
+                    style={{ backgroundColor: '#673ab7', color: 'white' }}
+                  >
+                    {unwrappingWeth ? 'Unwrapping...' : 'Unwrap WETH'}
+                  </Button>
+                </div>
+                <div style={{ fontSize: '12px', opacity: 0.7, marginTop: '5px' }}>
+                  💡 Convert WETH back to ETH if you have excess WETH
+                </div>
+              </div>
+
+              {/* Approve WETH Section */}
+              <div style={{ marginBottom: '10px' }}>
+                <h4 style={{ marginBottom: '10px', fontSize: '14px' }}>
+                  Step 2: Approve WETH Spending
+                </h4>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <div style={{ flex: 1, fontSize: '13px' }}>
+                    <strong>Current Allowance:</strong>{' '}
+                    <span
+                      style={{
+                        color: parseFloat(wethAllowance || '0') > 0 ? '#4caf50' : '#ff9800',
+                        fontWeight: 'bold',
+                      }}
+                    >
+                      {parseFloat(wethAllowance || '0') > 1e30
+                        ? '∞ (Unlimited)'
+                        : `${(parseFloat(wethAllowance || '0') / 1e18).toFixed(4)} WETH`}
+                    </span>
+                  </div>
+                  <Button
+                    variant="contained"
+                    onClick={approveWeth}
+                    disabled={
+                      approvingWeth ||
+                      parseFloat(wethAllowance || '0') > 1e30 ||
+                      !liquidityAmount ||
+                      parseFloat(liquidityAmount) <= 0
+                    }
+                    style={{
+                      backgroundColor:
+                        parseFloat(wethAllowance || '0') > 1e30 ? '#4caf50' : '#ff9800',
+                      color: 'white',
+                    }}
+                  >
+                    {approvingWeth
+                      ? 'Approving...'
+                      : parseFloat(wethAllowance || '0') > 1e30
+                      ? '✓ Approved'
+                      : 'Approve WETH'}
+                  </Button>
+                </div>
+                {(!liquidityAmount || parseFloat(liquidityAmount) <= 0) && (
+                  <div style={{ fontSize: '12px', color: '#ff9800', marginTop: '5px' }}>
+                    ⚠️ Enter liquidity amount below first
+                  </div>
+                )}
+              </div>
+            </div>
+          </>
 
           {/* Add Liquidity Section */}
           {isMarketRunning && (
@@ -643,49 +630,79 @@ const Layout: React.FC<LayoutProps> = ({
                   </Button>
                 </div>
                 <div style={{ fontSize: '12px', opacity: 0.7, marginTop: '10px' }}>
-                  Total Pool Shares: {(parseFloat(totalShares) / 1e18).toFixed(4)}
+                  Your Current Shares: {(parseFloat(userShares) / 1e18).toFixed(4)} | Total Pool
+                  Shares: {(parseFloat(totalShares) / 1e18).toFixed(4)}
                 </div>
               </div>
             </>
           )}
 
-          {/* Remove Liquidity Section */}
-          {isMarketPaused && parseFloat(userShares) > 0 && (
+          {/* Redeem Market Positions Section (required before withdraw) */}
+          {isMarketClosed && parseFloat(totalShares) > 0 && (
+            <>
+              <hr style={{ margin: '20px 0', border: 'none', borderTop: '1px solid #ddd' }} />
+              <div
+                style={{
+                  marginTop: '20px',
+                  padding: '15px',
+                  backgroundColor: '#fff3cd',
+                  borderRadius: '8px',
+                }}
+              >
+                <h3 style={{ marginBottom: '15px', color: '#f57c00' }}>
+                  🔄 Redeem Market Positions
+                </h3>
+                <p style={{ fontSize: '14px', opacity: 0.8, marginBottom: '10px' }}>
+                  Before LPs can withdraw, the market's outcome tokens must be converted back to
+                  collateral. Anyone can trigger this step after the oracle resolves the market.
+                </p>
+                <Button
+                  variant="contained"
+                  onClick={redeemMarketPositions}
+                  disabled={redeemingPositions}
+                  style={{ backgroundColor: '#f57c00', color: 'white' }}
+                >
+                  {redeemingPositions ? 'Redeeming...' : '🔄 Redeem Positions'}
+                </Button>
+                <div style={{ fontSize: '12px', opacity: 0.7, marginTop: '10px' }}>
+                  ⚠️ This must be called once after oracle resolution, before any LP can withdraw
+                  liquidity
+                </div>
+              </div>
+            </>
+          )}
+
+          {/* Withdraw Liquidity Section */}
+          {isMarketClosed && parseFloat(userShares) > 0 && (
             <>
               <hr style={{ margin: '20px 0', border: 'none', borderTop: '1px solid #ddd' }} />
               <div style={{ marginTop: '20px' }}>
-                <h3 style={{ marginBottom: '15px', color: '#ff9800' }}>➖ Remove Liquidity</h3>
+                <h3 style={{ marginBottom: '15px', color: '#4caf50' }}>💰 Withdraw Liquidity</h3>
                 <p style={{ fontSize: '14px', opacity: 0.8, marginBottom: '10px' }}>
-                  Market is paused. You can now remove your liquidity.
+                  After positions are redeemed, you can withdraw your share of the final collateral.
                 </p>
                 <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                  <TextField
-                    variant="filled"
-                    label="Shares to Remove"
-                    type="number"
-                    value={sharesToRemove}
-                    onChange={(e) => setSharesToRemove(e.target.value)}
-                    disabled={removingLiquidity}
-                    style={{ flex: 1 }}
-                    inputProps={{
-                      min: 0,
-                      max: parseFloat(userShares) / 1e18,
-                      step: 0.0001,
-                    }}
-                  />
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: '14px', marginBottom: '5px' }}>
+                      <strong>Your Shares:</strong> {(parseFloat(userShares) / 1e18).toFixed(4)}
+                    </div>
+                    <div style={{ fontSize: '14px' }}>
+                      <strong>Your Share %:</strong>{' '}
+                      {(parseFloat(sharePercentage) / 100).toFixed(2)}%
+                    </div>
+                  </div>
                   <Button
                     variant="contained"
-                    onClick={removeLiquidity}
-                    disabled={
-                      removingLiquidity || !sharesToRemove || parseFloat(sharesToRemove) <= 0
-                    }
-                    style={{ backgroundColor: '#ff9800' }}
+                    onClick={withdrawLiquidity}
+                    disabled={removingLiquidity}
+                    style={{ backgroundColor: '#4caf50', color: 'white' }}
                   >
-                    {removingLiquidity ? 'Removing...' : 'Remove Liquidity'}
+                    {removingLiquidity ? 'Withdrawing...' : 'Withdraw All'}
                   </Button>
                 </div>
                 <div style={{ fontSize: '12px', opacity: 0.7, marginTop: '10px' }}>
-                  Your Shares: {(parseFloat(userShares) / 1e18).toFixed(4)}
+                  💡 This will withdraw your entire liquidity position plus your share of final
+                  winnings
                 </div>
               </div>
             </>

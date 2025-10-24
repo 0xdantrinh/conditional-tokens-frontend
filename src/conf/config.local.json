@@ -1,27 +1,27 @@
 {
   "networkId": 84532,
   "lmsrMarketMakers": {
-    "0x1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b": "0x7e6b72A20746031EB5782C44D53D9Bd53756E314",
-    "0x2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c": "0x1B1ACF059547F8A4ef1995652Bb7228eCFD643Cc",
-    "0x3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d": "0x487252Ddff6b0c05517a187627B8B51B2CA1475F",
-    "0x4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e": "0xdf6e3bC9cf0F5c6a2D9F0DcAa66ECdb43dDC46AA",
-    "0x5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f": "0x8b40e1d05DDDB86Eac1Df52Dd26C931E0640fC09",
-    "0x6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a": "0xAF5f321232586be58961C4D8cC60dB55EC1a8453",
-    "0x7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b": "0x63d3c91C6e990891f7885c22e867fdedb002dA3F",
-    "0x8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c": "0x85778421dE2889588b7111fE32EBD60a6C84d29A",
-    "0x9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d": "0x02274cc3c7c254d6Ebc9Ff0CD2D9Ed37bbeb0D86",
-    "0xa0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1": "0x1C3835Dd539aFaFcE67D27A4ffA6D041390aa86d",
-    "0xb1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2": "0x3b0fb96B02E619b29b23c08EEF60e13bc274DEed",
-    "0xc2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3": "0x1Db71298874797a6210006fe3960Ed9817503438",
-    "0xd3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4": "0x4d4e4f106718022C12f5479ce8BB17EBE73005d6",
-    "0xe4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5": "0xa02b8804fA7906452969cEB55Bf3156D27a3e229",
-    "0xf5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6": "0xef4Ab1F81EbcE058d97Abc74F66Ea9b3Be891D05",
-    "0x4b22fe478b95fdaa835ddddf631ab29f12900b62061e0c5fd8564ddb7b684333": "0x77fb7279fC075Fd6d96C80529359e031F866767a",
-    "0x0000000000000000000000000000000000000000000000000000000000000011": "0x1ec82B94878d443EB3e5C84Df6656f3b4FC88215",
-    "0x0000000000000000000000000000000000000000000000000000000000000012": "0xcDC82bc34Ec082CB8C670d1FD03036D33144D176",
-    "0x0000000000000000000000000000000000000000000000000000000000000013": "0xe3285DB189eb96Df3825A1880DBdF2E8a15dbfE8",
-    "0x0000000000000000000000000000000000000000000000000000000000000014": "0x1Ee725F3ec564515E997dc449C1a2d8065A652b3",
-    "0x0000000000000000000000000000000000000000000000000000000000000015": "0x0BCa883978f9dCffbE2fe60AD9072c6aE5e814CC"
+    "0x1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b": "0x442c3852729452b89DEc70dBF37C1D8A6f0108Fc",
+    "0x2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c": "0x612B09Ae968Fc91D12073b8502A09f8F84239155",
+    "0x3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d": "0x87DD8c332055d0c6d087d9a6cD8BA4c098Fc51bb",
+    "0x4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e": "0xD563D2aA0C5C0ED9546FE1240F62eAD65F3b9f6c",
+    "0x5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f": "0xE84649CCF1404393f990306ad0CEc876EE8467e6",
+    "0x6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a": "0x8BEF9F8bb8a1d0d6d789407AA8A569B822D92B9E",
+    "0x7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b": "0x97755F71f638dbF0fdA5546f5ED2DEeAd975FdC2",
+    "0x8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c": "0x903Fb856aEdeE00B5beA7242fffEdEd553031aA6",
+    "0x9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d": "0x0a845a0aBbaa42D76F35b36D2FE7837A1418B18f",
+    "0xa0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1": "0x1392674203F64edC470787a7D746f3E524921734",
+    "0xb1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2": "0x3C7C977D382F8F549406eaA588dD289E094074b4",
+    "0xc2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3": "0xf850118d78669A1bb9A67a83cF87dA6446b5779d",
+    "0xd3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4": "0x53f1C3f5a9000245Efff5499D29E2D0B3706988a",
+    "0xe4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5": "0x106E92A49Da735031b3A989ffCc7360ee4622fD2",
+    "0xf5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6": "0xc7d3010f62c2A0Df34f6238CB7131A0e3823Ab29",
+    "0x4b22fe478b95fdaa835ddddf631ab29f12900b62061e0c5fd8564ddb7b684333": "0x520993DfD7E4E835e05E9e2648f8EBDF54390BdA",
+    "0x0000000000000000000000000000000000000000000000000000000000000011": "0x33Af3B0965D9bC5b76ed7B76365B34E977eA99e0",
+    "0x0000000000000000000000000000000000000000000000000000000000000012": "0x5b8e40009a14CAA669B72E322B0e8F40b8324Afb",
+    "0x0000000000000000000000000000000000000000000000000000000000000013": "0x1e88eC46c297305ebd9f9f8FA280B51DB043D278",
+    "0x0000000000000000000000000000000000000000000000000000000000000014": "0x60F7E09C099Cd8B7F8Ca062A9EDb8c2fD627811C",
+    "0x0000000000000000000000000000000000000000000000000000000000000015": "0x54D5f3Cc33a900a4B9585AB9aacE273Fd1886B45"
   },
   "markets": [
     {
@@ -29,7 +29,7 @@
       "questionId": "0x1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b",
       "title": "Will Bitcoin reach $150,000 by end of 2025?",
       "conditionId": "0x6f4dda8280be1a15af6039986648aadc6b4ffd977ad5d05622a63ebdf6d53eb4",
-      "lmsrAddress": "0x7e6b72A20746031EB5782C44D53D9Bd53756E314",
+      "lmsrAddress": "0x442c3852729452b89DEc70dBF37C1D8A6f0108Fc",
       "outcomeSlotCount": 2,
       "outcomes": ["Yes", "No"]
     },
@@ -38,7 +38,7 @@
       "questionId": "0x2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c",
       "title": "Will Ethereum successfully complete 'The Surge' upgrade in 2025?",
       "conditionId": "0xde4c13944ac1bf346fcbd3158de10e7aa48c0df6ca8d2ea4da1d8ab9bc62f68c",
-      "lmsrAddress": "0x1B1ACF059547F8A4ef1995652Bb7228eCFD643Cc",
+      "lmsrAddress": "0x612B09Ae968Fc91D12073b8502A09f8F84239155",
       "outcomeSlotCount": 2,
       "outcomes": ["Yes", "No"]
     },
@@ -47,7 +47,7 @@
       "questionId": "0x3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d",
       "title": "Will Base network TVL exceed $10 billion in 2025?",
       "conditionId": "0x79b3f5e655e61fbaa9f4e19f26b2b9ba750a1edb54ee07914e02e5aa8f27fefc",
-      "lmsrAddress": "0x487252Ddff6b0c05517a187627B8B51B2CA1475F",
+      "lmsrAddress": "0x87DD8c332055d0c6d087d9a6cD8BA4c098Fc51bb",
       "outcomeSlotCount": 2,
       "outcomes": ["Yes", "No"]
     },
@@ -56,7 +56,7 @@
       "questionId": "0x4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e",
       "title": "Will the US approve a Bitcoin Strategic Reserve in 2025?",
       "conditionId": "0x06a742f15ab5a9a7ab12e8849ca205660b25a6e64a2e8d8f66879b90031546a8",
-      "lmsrAddress": "0xdf6e3bC9cf0F5c6a2D9F0DcAa66ECdb43dDC46AA",
+      "lmsrAddress": "0xD563D2aA0C5C0ED9546FE1240F62eAD65F3b9f6c",
       "outcomeSlotCount": 2,
       "outcomes": ["Yes", "No"]
     },
@@ -65,7 +65,7 @@
       "questionId": "0x5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f",
       "title": "Will the EU pass comprehensive AI regulation before 2026?",
       "conditionId": "0x4879af5e54269238c7b915ce853d05aaa4b7ae8d7c6b6e7e8711dd62195b9929",
-      "lmsrAddress": "0x8b40e1d05DDDB86Eac1Df52Dd26C931E0640fC09",
+      "lmsrAddress": "0xE84649CCF1404393f990306ad0CEc876EE8467e6",
       "outcomeSlotCount": 2,
       "outcomes": ["Yes", "No"]
     },
@@ -74,7 +74,7 @@
       "questionId": "0x6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a",
       "title": "Will GPT-5 be released by OpenAI in 2025?",
       "conditionId": "0x2b771f3022e5a1fde54dda9a7e5fbf1d5558c1ea5d6a2f48d47cff5711b1cffb",
-      "lmsrAddress": "0xAF5f321232586be58961C4D8cC60dB55EC1a8453",
+      "lmsrAddress": "0x8BEF9F8bb8a1d0d6d789407AA8A569B822D92B9E",
       "outcomeSlotCount": 2,
       "outcomes": ["Yes", "No"]
     },
@@ -83,7 +83,7 @@
       "questionId": "0x7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b",
       "title": "Will Apple release an AI-powered HomePod with advanced capabilities in 2025?",
       "conditionId": "0x5d8a98ada8aa565055bc37c0f04ed3209fcdeeb111dc40fc7e5c10162986b71d",
-      "lmsrAddress": "0x63d3c91C6e990891f7885c22e867fdedb002dA3F",
+      "lmsrAddress": "0x97755F71f638dbF0fdA5546f5ED2DEeAd975FdC2",
       "outcomeSlotCount": 2,
       "outcomes": ["Yes", "No"]
     },
@@ -92,7 +92,7 @@
       "questionId": "0x8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c",
       "title": "Will an NBA team win 70+ games in the 2025-26 season?",
       "conditionId": "0x76cdba5119733033185df31b2309f064f2c8fc96b4b0388285eeb81545d5deef",
-      "lmsrAddress": "0x85778421dE2889588b7111fE32EBD60a6C84d29A",
+      "lmsrAddress": "0x903Fb856aEdeE00B5beA7242fffEdEd553031aA6",
       "outcomeSlotCount": 2,
       "outcomes": ["Yes", "No"]
     },
@@ -101,7 +101,7 @@
       "questionId": "0x9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d",
       "title": "Will a streaming service surpass Netflix in global subscribers by 2026?",
       "conditionId": "0x2f6f38d84d871fe4fb53337aea65ebe732980f70ce4b8db5ef469d31ea550e4c",
-      "lmsrAddress": "0x02274cc3c7c254d6Ebc9Ff0CD2D9Ed37bbeb0D86",
+      "lmsrAddress": "0x0a845a0aBbaa42D76F35b36D2FE7837A1418B18f",
       "outcomeSlotCount": 2,
       "outcomes": ["Yes", "No"]
     },
@@ -110,7 +110,7 @@
       "questionId": "0xa0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1",
       "title": "Will SpaceX successfully land humans on Mars by 2030?",
       "conditionId": "0xb7f89cf1a4c5ed125eda6cddc704c7e2d1657c025b48330d623686a1ef8224a7",
-      "lmsrAddress": "0x1C3835Dd539aFaFcE67D27A4ffA6D041390aa86d",
+      "lmsrAddress": "0x1392674203F64edC470787a7D746f3E524921734",
       "outcomeSlotCount": 2,
       "outcomes": ["Yes", "No"]
     },
@@ -119,7 +119,7 @@
       "questionId": "0xb1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2",
       "title": "Will a quantum computer achieve quantum advantage in drug discovery by 2026?",
       "conditionId": "0x6e3d326af8d7ab612463e9054bf7d48ae5307c40992f5cc3e9cd6818b5aec9cd",
-      "lmsrAddress": "0x3b0fb96B02E619b29b23c08EEF60e13bc274DEed",
+      "lmsrAddress": "0x3C7C977D382F8F549406eaA588dD289E094074b4",
       "outcomeSlotCount": 2,
       "outcomes": ["Yes", "No"]
     },
@@ -128,7 +128,7 @@
       "questionId": "0xc2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3",
       "title": "Will Tesla's market cap exceed $1 trillion in 2025?",
       "conditionId": "0x175ef036d63a77a46335dcf9af3ee51d1a6ddf7a737b0d2d8cae013e348a4040",
-      "lmsrAddress": "0x1Db71298874797a6210006fe3960Ed9817503438",
+      "lmsrAddress": "0xf850118d78669A1bb9A67a83cF87dA6446b5779d",
       "outcomeSlotCount": 2,
       "outcomes": ["Yes", "No"]
     },
@@ -137,7 +137,7 @@
       "questionId": "0xd3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4",
       "title": "Will any company achieve a $5 trillion market cap by 2026?",
       "conditionId": "0xfc6087b3bd33b6fa1a92c73552fac6ec377295c9b7268172b54a41c87ab3745b",
-      "lmsrAddress": "0x4d4e4f106718022C12f5479ce8BB17EBE73005d6",
+      "lmsrAddress": "0x53f1C3f5a9000245Efff5499D29E2D0B3706988a",
       "outcomeSlotCount": 2,
       "outcomes": ["Yes", "No"]
     },
@@ -146,7 +146,7 @@
       "questionId": "0xe4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5",
       "title": "Will 2025 be recorded as the hottest year on record?",
       "conditionId": "0x4cde9ff026f39a08dcc4566fe7fdd130edc0d180bcdc3bd0a1eebb5f4fe5a9b7",
-      "lmsrAddress": "0xa02b8804fA7906452969cEB55Bf3156D27a3e229",
+      "lmsrAddress": "0x106E92A49Da735031b3A989ffCc7360ee4622fD2",
       "outcomeSlotCount": 2,
       "outcomes": ["Yes", "No"]
     },
@@ -155,7 +155,7 @@
       "questionId": "0xf5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6",
       "title": "Will global renewable energy capacity exceed 50% by 2026?",
       "conditionId": "0xfd8606accb03818ddbd732de027963f9c7552ec257ea4ddcdc77349c71d1c600",
-      "lmsrAddress": "0xef4Ab1F81EbcE058d97Abc74F66Ea9b3Be891D05",
+      "lmsrAddress": "0xc7d3010f62c2A0Df34f6238CB7131A0e3823Ab29",
       "outcomeSlotCount": 2,
       "outcomes": ["Yes", "No"]
     },
@@ -164,7 +164,7 @@
       "questionId": "0x4b22fe478b95fdaa835ddddf631ab29f12900b62061e0c5fd8564ddb7b684333",
       "title": "Will the summer 2020 in Germany break again weather records?",
       "conditionId": "0x378ae232a7de5082c51aeba52df8deb16bcc19c04ec57ecc8aa68719c37d0e27",
-      "lmsrAddress": "0x77fb7279fC075Fd6d96C80529359e031F866767a",
+      "lmsrAddress": "0x520993DfD7E4E835e05E9e2648f8EBDF54390BdA",
       "outcomeSlotCount": 2,
       "outcomes": ["Yes", "No"]
     },
@@ -173,7 +173,7 @@
       "questionId": "0x0000000000000000000000000000000000000000000000000000000000000011",
       "title": "When will the US government shutdown end?",
       "conditionId": "0xf79fe8be6d90e8905eabf96793851d287a07fe1a12d1c48ee1d0f57a578f0933",
-      "lmsrAddress": "0x1ec82B94878d443EB3e5C84Df6656f3b4FC88215",
+      "lmsrAddress": "0x33Af3B0965D9bC5b76ed7B76365B34E977eA99e0",
       "outcomeSlotCount": 7,
       "outcomes": [
         "October 23-26",
@@ -190,7 +190,7 @@
       "questionId": "0x0000000000000000000000000000000000000000000000000000000000000012",
       "title": "What will be the next Fed rate decision?",
       "conditionId": "0xbe31fbc70f45a901abcec34afd237a8826f2b5cc7bb39ef115375294bec64a1a",
-      "lmsrAddress": "0xcDC82bc34Ec082CB8C670d1FD03036D33144D176",
+      "lmsrAddress": "0x5b8e40009a14CAA669B72E322B0e8F40b8324Afb",
       "outcomeSlotCount": 4,
       "outcomes": ["Cut by 50+ bps", "Cut by 25 bps", "Hold steady", "Raise rates"]
     },
@@ -199,7 +199,7 @@
       "questionId": "0x0000000000000000000000000000000000000000000000000000000000000013",
       "title": "Which team will win the 2025 World Series?",
       "conditionId": "0x45534ece6626176dc7a6340b37967f39f501e0d9479bf1959b3b87ff86bb26d8",
-      "lmsrAddress": "0xe3285DB189eb96Df3825A1880DBdF2E8a15dbfE8",
+      "lmsrAddress": "0x1e88eC46c297305ebd9f9f8FA280B51DB043D278",
       "outcomeSlotCount": 8,
       "outcomes": ["Yankees", "Dodgers", "Astros", "Braves", "Red Sox", "Giants", "Cubs", "Other"]
     },
@@ -208,7 +208,7 @@
       "questionId": "0x0000000000000000000000000000000000000000000000000000000000000014",
       "title": "When will Bitcoin reach $150,000?",
       "conditionId": "0x4fd597649e6d7e8fabef354a8bb8bcb76aa27109279d49ad35704f12513af8f0",
-      "lmsrAddress": "0x1Ee725F3ec564515E997dc449C1a2d8065A652b3",
+      "lmsrAddress": "0x60F7E09C099Cd8B7F8Ca062A9EDb8c2fD627811C",
       "outcomeSlotCount": 5,
       "outcomes": ["Q4 2025", "Q1 2026", "Q2 2026", "Q3-Q4 2026", "Never/After 2026"]
     },
@@ -217,7 +217,7 @@
       "questionId": "0x0000000000000000000000000000000000000000000000000000000000000015",
       "title": "What will be the top AI breakthrough of 2025?",
       "conditionId": "0x60207e570b12ed52c34c95a1fdcb55afb0a662307e775f8cbaed9b11d1c0865f",
-      "lmsrAddress": "0x0BCa883978f9dCffbE2fe60AD9072c6aE5e814CC",
+      "lmsrAddress": "0x54D5f3Cc33a900a4B9585AB9aacE273Fd1886B45",
       "outcomeSlotCount": 6,
       "outcomes": [
         "AGI achieved",
@@ -231,10 +231,10 @@
   ],
   "network": "base-sepolia",
   "deployer": "0xE4452Cb39ad3Faa39434b9D768677B34Dc90D5dc",
-  "deployedAt": "1761268638",
+  "deployedAt": "1761273186",
   "contracts": {
-    "conditionalTokens": "0x044Fec30bd1d241733BDfE5B5507d4de7Ef3fEF6",
-    "collateralToken": "0x568Dfc5CFF2A7040eB29ec7B0168AdE78a15b67C",
-    "lmsrMarketMakerFactory": "0x8601D83881f4FF6654401dc59919a793139BdC02"
+    "conditionalTokens": "0x9E3c7A35e4a6500e62E3E8D2c24e71F5F37107A9",
+    "collateralToken": "0x3D935Dc2185bC52691F70ee94d784A1306f9Ac5D",
+    "lmsrMarketMakerFactory": "0x14a59998de96f0A03773bC0c7284556d2bcd0356"
   }
 }

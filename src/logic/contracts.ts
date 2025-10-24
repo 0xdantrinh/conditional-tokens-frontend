@@ -74,8 +74,13 @@ const loadContracts = async (web3: any, lmsrAddress: string, account: string) =>
       }
 
       // Get addresses for other contracts
+      console.log('Getting pmSystem address...')
       const pmSystemAddress = await lmsrMarketMaker.methods.pmSystem().call()
+      console.log('pmSystem address:', pmSystemAddress)
+
+      console.log('Getting collateralToken address...')
       const collateralTokenAddress = await lmsrMarketMaker.methods.collateralToken().call()
+      console.log('collateralToken address:', collateralTokenAddress)
 
       // Create Conditional Tokens contract instance
       const conditionalTokens = await loadConditionalTokensContract(web3, pmSystemAddress)
