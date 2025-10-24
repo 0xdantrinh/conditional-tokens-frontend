@@ -4,6 +4,7 @@ import { UmaOracleRepo } from 'src/logic/UmaOracle'
 import { UMA_CONFIG } from 'src/conf/uma'
 import QuestionDetailsModal from './QuestionDetailsModal'
 import ProposeAnswerModal from './ProposeAnswerModal'
+import { LivenessCountdown } from './LivenessCountdown'
 import { EnrichedQuestion, StatusFilter } from './types'
 import styles from './style.module.css'
 
@@ -47,13 +48,23 @@ const OraclePage: React.FC<OraclePageProps> = ({ web3, account }) => {
             const isReady = await oracleRepo.isReady(event.questionID)
             const parsedData = oracleRepo.parseAncillaryData(event.ancillaryData)
 
+            // Get oracle request for liveness countdown
+            const oracleRequest =
+              questionData.requestTimestamp !== '0'
+                ? await oracleRepo.getOracleRequest(event.questionID)
+                : null
+
             // Determine status
             let status: EnrichedQuestion['status']
             if (questionData.resolved || resolvedQuestionIds.has(event.questionID)) {
               status = 'Resolved'
             } else if (isReady) {
               status = 'Ready to Resolve'
-            } else if (questionData.requestTimestamp !== '0') {
+            } else if (
+              oracleRequest &&
+              oracleRequest.proposer !== '0x0000000000000000000000000000000000000000'
+            ) {
+              // Only mark as "Proposed" if someone actually proposed (proposer is not zero address)
               status = 'Proposed - Pending Liveness'
             } else {
               status = 'Waiting for Proposal'
@@ -65,6 +76,7 @@ const OraclePage: React.FC<OraclePageProps> = ({ web3, account }) => {
               isReady,
               parsedData,
               status,
+              oracleRequest,
             }
           } catch (err) {
             console.error('Error enriching question:', event.questionID, err)
@@ -74,6 +86,7 @@ const OraclePage: React.FC<OraclePageProps> = ({ web3, account }) => {
               isReady: false,
               parsedData: oracleRepo.parseAncillaryData(event.ancillaryData),
               status: 'Waiting for Proposal' as const,
+              oracleRequest: null,
             }
           }
         }),
@@ -134,6 +147,17 @@ const OraclePage: React.FC<OraclePageProps> = ({ web3, account }) => {
   // Copy to clipboard
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text)
+  }
+
+  // Format proposed answer value
+  const formatProposedAnswer = (proposedPrice: string) => {
+    // YES = 1e18, NO = 0, UNDECIDED = 0.5e18
+    console.log('Proposed price raw:', proposedPrice)
+    const value = proposedPrice
+    if (value === '1000000000000000000') return 'YES ✅'
+    if (value === '0') return 'NO ❌'
+    if (value === '500000000000000000') return 'UNDECIDED 🤷'
+    return `Unknown (${value})`
   }
 
   // Get status badge color
@@ -307,6 +331,40 @@ const OraclePage: React.FC<OraclePageProps> = ({ web3, account }) => {
                   >
                     💡 Propose Answer
                   </button>
+                </div>
+              )}
+
+              {question.status === 'Proposed - Pending Liveness' && question.oracleRequest && (
+                <div
+                  style={{
+                    marginTop: '15px',
+                    padding: '12px',
+                    backgroundColor: '#fffbeb',
+                    borderRadius: '8px',
+                    border: '1px solid #fbbf24',
+                  }}
+                >
+                  <div style={{ marginBottom: '8px' }}>
+                    <strong>Proposed Answer:</strong>{' '}
+                    {formatProposedAnswer(question.oracleRequest.proposedPrice)}
+                  </div>
+                  <div style={{ marginBottom: '8px' }}>
+                    <strong>Proposed by:</strong> {truncateAddress(question.oracleRequest.proposer)}
+                    <button
+                      className={styles.copyButton}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        copyToClipboard(question.oracleRequest!.proposer)
+                      }}
+                      title="Copy Proposer Address"
+                    >
+                      📋
+                    </button>
+                  </div>
+                  <div>
+                    <strong>Liveness remaining:</strong>{' '}
+                    <LivenessCountdown expirationTime={question.oracleRequest.expirationTime} />
+                  </div>
                 </div>
               )}
 

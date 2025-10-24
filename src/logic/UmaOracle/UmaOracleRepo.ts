@@ -177,15 +177,18 @@ export default class UmaOracleRepo {
         )
         .call()
 
+      console.log('Raw oracle request:', request)
+      console.log('Proposed price at index 5:', request[5])
+
       return {
         proposer: request[0],
         disputer: request[1],
         currency: request[2],
         settled: request[3],
-        proposedPrice: request[6],
-        resolvedPrice: request[7],
-        expirationTime: request[8],
-        reward: request[9],
+        proposedPrice: request[5], // FIXED: Was index 6, should be 5
+        resolvedPrice: request[6],
+        expirationTime: request[7],
+        reward: request[8],
         bond: request[4][5], // requestSettings.bond
       }
     } catch (err) {

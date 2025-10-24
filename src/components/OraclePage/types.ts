@@ -10,6 +10,17 @@ export interface EnrichedQuestion extends QuestionInitializedEvent {
     raw: string
   }
   status: 'Waiting for Proposal' | 'Proposed - Pending Liveness' | 'Ready to Resolve' | 'Resolved'
+  oracleRequest: {
+    proposer: string
+    disputer: string
+    currency: string
+    settled: boolean
+    proposedPrice: string
+    resolvedPrice: string
+    expirationTime: string
+    reward: string
+    bond: string
+  } | null
 }
 
 export type StatusFilter = 'All' | 'Pending' | 'Ready' | 'Resolved'
