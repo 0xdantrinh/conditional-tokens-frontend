@@ -2,6 +2,44 @@
   text-align: center;
 }
 
+.headerContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.navigation {
+  display: flex;
+  gap: 10px;
+}
+
+.navButton {
+  background-color: white;
+  border: 2px solid #e0e0e0;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s;
+  color: #666;
+}
+
+.navButton:hover {
+  border-color: #1976d2;
+  color: #1976d2;
+  background-color: #f5f9ff;
+}
+
+.navButton.active {
+  background-color: #1976d2;
+  border-color: #1976d2;
+  color: white;
+}
+
 .header {
   margin-bottom: 40px;
   display: flex;
