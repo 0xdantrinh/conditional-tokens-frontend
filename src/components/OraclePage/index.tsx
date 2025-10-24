@@ -61,7 +61,20 @@ const OraclePage: React.FC<OraclePageProps> = ({ web3, account }) => {
             let status: EnrichedQuestion['status']
             if (questionData.resolved || resolvedQuestionIds.has(event.questionID)) {
               status = 'Resolved'
+            } else if (
+              oracleRequest &&
+              oracleRequest.disputer !== '0x0000000000000000000000000000000000000000'
+            ) {
+              // If there's a disputer, it's been disputed
+              if (oracleRequest.settled) {
+                // DVM has voted, ready to resolve with DVM's answer
+                status = 'Ready to Resolve'
+              } else {
+                // Still waiting for DVM vote on Ethereum mainnet
+                status = 'Disputed'
+              }
             } else if (isReady) {
+              // Normal flow: liveness expired, ready to resolve
               status = 'Ready to Resolve'
             } else if (
               oracleRequest &&
@@ -119,7 +132,11 @@ const OraclePage: React.FC<OraclePageProps> = ({ web3, account }) => {
   const filteredQuestions = questions.filter((q) => {
     if (statusFilter === 'All') return true
     if (statusFilter === 'Pending') {
-      return q.status === 'Waiting for Proposal' || q.status === 'Proposed - Pending Liveness'
+      return (
+        q.status === 'Waiting for Proposal' ||
+        q.status === 'Proposed - Pending Liveness' ||
+        q.status === 'Disputed'
+      )
     }
     if (statusFilter === 'Ready') return q.status === 'Ready to Resolve'
     if (statusFilter === 'Resolved') return q.status === 'Resolved'
@@ -169,6 +186,8 @@ const OraclePage: React.FC<OraclePageProps> = ({ web3, account }) => {
         return '#9e9e9e'
       case 'Proposed - Pending Liveness':
         return '#ff9800'
+      case 'Disputed':
+        return '#e91e63' // Pink/magenta for disputed
       case 'Ready to Resolve':
         return '#4caf50'
       case 'Resolved':
@@ -237,7 +256,8 @@ const OraclePage: React.FC<OraclePageProps> = ({ web3, account }) => {
                 questions.filter(
                   (q) =>
                     q.status === 'Waiting for Proposal' ||
-                    q.status === 'Proposed - Pending Liveness',
+                    q.status === 'Proposed - Pending Liveness' ||
+                    q.status === 'Disputed',
                 ).length
               })`}
             {filter === 'Ready' &&
@@ -406,8 +426,102 @@ const OraclePage: React.FC<OraclePageProps> = ({ web3, account }) => {
                 </div>
               )}
 
+              {question.status === 'Disputed' && question.oracleRequest && (
+                <div
+                  style={{
+                    marginTop: '15px',
+                    padding: '12px',
+                    backgroundColor: '#fce4ec',
+                    borderRadius: '8px',
+                    border: '2px solid #e91e63',
+                  }}
+                >
+                  <div style={{ marginBottom: '8px', color: '#c2185b', fontWeight: 'bold' }}>
+                    ⚠️ DISPUTED - Escalated to UMA DVM
+                  </div>
+                  <div style={{ marginBottom: '8px' }}>
+                    <strong>Original Proposal:</strong>{' '}
+                    {formatProposedAnswer(question.oracleRequest.proposedPrice)}
+                  </div>
+                  <div style={{ marginBottom: '8px' }}>
+                    <strong>Proposed by:</strong> {truncateAddress(question.oracleRequest.proposer)}
+                  </div>
+                  <div style={{ marginBottom: '8px' }}>
+                    <strong>Disputed by:</strong> {truncateAddress(question.oracleRequest.disputer)}
+                  </div>
+                  <div
+                    style={{
+                      marginTop: '10px',
+                      padding: '10px',
+                      backgroundColor: '#fff',
+                      borderRadius: '6px',
+                      fontSize: '13px',
+                    }}
+                  >
+                    <p style={{ margin: '0 0 5px 0' }}>
+                      This proposal has been disputed and escalated to UMA's Data Verification
+                      Mechanism (DVM) on Ethereum mainnet. UMA token holders are voting on the
+                      correct answer.
+                    </p>
+                    <p style={{ margin: '5px 0' }}>
+                      <strong>Resolution is blocked</strong> until the DVM vote completes.
+                    </p>
+                    <a
+                      href="https://vote.uma.xyz"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ color: '#1976d2', textDecoration: 'underline' }}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      Monitor DVM Vote →
+                    </a>
+                  </div>
+                </div>
+              )}
+
               {question.isReady && (
-                <div className={styles.readyIndicator}>✅ Ready to resolve - Click to resolve</div>
+                <>
+                  {question.oracleRequest &&
+                  question.oracleRequest.disputer !==
+                    '0x0000000000000000000000000000000000000000' &&
+                  question.oracleRequest.settled ? (
+                    <div
+                      style={{
+                        marginTop: '15px',
+                        padding: '12px',
+                        backgroundColor: '#fff3e0',
+                        border: '2px solid #ff9800',
+                        borderRadius: '8px',
+                      }}
+                    >
+                      <div style={{ fontWeight: 'bold', marginBottom: '8px', color: '#e65100' }}>
+                        ⚖️ DVM Vote Complete
+                      </div>
+                      <div style={{ marginBottom: '5px' }}>
+                        <strong>Original Proposal:</strong>{' '}
+                        {formatProposedAnswer(question.oracleRequest.proposedPrice)}
+                      </div>
+                      <div style={{ marginBottom: '5px' }}>
+                        <strong>DVM Final Answer:</strong>{' '}
+                        {formatProposedAnswer(question.oracleRequest.resolvedPrice)}
+                      </div>
+                      <div style={{ marginBottom: '10px' }}>
+                        <strong>Winner:</strong>{' '}
+                        {question.oracleRequest.proposedPrice ===
+                        question.oracleRequest.resolvedPrice
+                          ? `Proposer (${truncateAddress(question.oracleRequest.proposer)})`
+                          : `Disputer (${truncateAddress(question.oracleRequest.disputer)})`}
+                      </div>
+                      <div className={styles.readyIndicator} style={{ marginTop: '10px' }}>
+                        ✅ Ready to resolve with DVM answer - Click to resolve
+                      </div>
+                    </div>
+                  ) : (
+                    <div className={styles.readyIndicator}>
+                      ✅ Ready to resolve - Click to resolve
+                    </div>
+                  )}
+                </>
               )}
             </div>
           ))

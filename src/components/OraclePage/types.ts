@@ -9,7 +9,12 @@ export interface EnrichedQuestion extends QuestionInitializedEvent {
     resData: string
     raw: string
   }
-  status: 'Waiting for Proposal' | 'Proposed - Pending Liveness' | 'Ready to Resolve' | 'Resolved'
+  status:
+    | 'Waiting for Proposal'
+    | 'Proposed - Pending Liveness'
+    | 'Disputed'
+    | 'Ready to Resolve'
+    | 'Resolved'
   oracleRequest: {
     proposer: string
     disputer: string
