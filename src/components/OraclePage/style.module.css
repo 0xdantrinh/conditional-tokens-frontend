@@ -185,6 +185,27 @@
   opacity: 1;
 }
 
+.proposeButton {
+  width: 100%;
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.proposeButton:hover {
+  background-color: #1565c0;
+}
+
+.proposeButton:active {
+  transform: scale(0.98);
+}
+
 .readyIndicator {
   margin-top: 15px;
   padding: 12px;

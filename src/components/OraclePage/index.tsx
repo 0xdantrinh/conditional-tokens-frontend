@@ -3,6 +3,7 @@ import Web3 from 'web3'
 import { UmaOracleRepo } from 'src/logic/UmaOracle'
 import { UMA_CONFIG } from 'src/conf/uma'
 import QuestionDetailsModal from './QuestionDetailsModal'
+import ProposeAnswerModal from './ProposeAnswerModal'
 import { EnrichedQuestion, StatusFilter } from './types'
 import styles from './style.module.css'
 
@@ -19,6 +20,8 @@ const OraclePage: React.FC<OraclePageProps> = ({ web3, account }) => {
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('All')
   const [selectedQuestion, setSelectedQuestion] = useState<EnrichedQuestion | null>(null)
   const [showModal, setShowModal] = useState(false)
+  const [showProposeModal, setShowProposeModal] = useState(false)
+  const [questionToPropose, setQuestionToPropose] = useState<EnrichedQuestion | null>(null)
 
   // Load all questions
   const loadQuestions = useCallback(async () => {
@@ -292,6 +295,21 @@ const OraclePage: React.FC<OraclePageProps> = ({ web3, account }) => {
                 </div>
               </div>
 
+              {question.status === 'Waiting for Proposal' && (
+                <div style={{ marginTop: '15px' }}>
+                  <button
+                    className={styles.proposeButton}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setQuestionToPropose(question)
+                      setShowProposeModal(true)
+                    }}
+                  >
+                    💡 Propose Answer
+                  </button>
+                </div>
+              )}
+
               {question.isReady && (
                 <div className={styles.readyIndicator}>✅ Ready to resolve - Click to resolve</div>
               )}
@@ -308,6 +326,25 @@ const OraclePage: React.FC<OraclePageProps> = ({ web3, account }) => {
           oracleRepo={oracleRepo}
           onClose={() => setShowModal(false)}
           onResolved={handleQuestionResolved}
+        />
+      )}
+
+      {/* Propose Answer Modal */}
+      {showProposeModal && questionToPropose && (
+        <ProposeAnswerModal
+          question={questionToPropose}
+          account={account}
+          oracleRepo={oracleRepo}
+          web3={web3}
+          onClose={() => {
+            setShowProposeModal(false)
+            setQuestionToPropose(null)
+          }}
+          onProposed={() => {
+            setShowProposeModal(false)
+            setQuestionToPropose(null)
+            loadQuestions() // Reload to update status
+          }}
         />
       )}
     </div>
