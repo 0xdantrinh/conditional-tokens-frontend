@@ -10,35 +10,39 @@ class ConditionalTokensRepo {
   }
 
   balanceOf = async (account: string, positionId: number) => {
-    return this.conditionalTokens.balanceOf(account, positionId)
+    return this.conditionalTokens.methods.balanceOf(account, positionId).call()
   }
 
   getOutcomeSlotCount = async (id: string) => {
-    return this.conditionalTokens.getOutcomeSlotCount(id)
+    return this.conditionalTokens.methods.getOutcomeSlotCount(id).call()
   }
 
   getCollectionId = async (parentCollectionId: string, conditionId: string, indexSet: number[]) => {
-    return this.conditionalTokens.getCollectionId(parentCollectionId, conditionId, indexSet)
+    return this.conditionalTokens.methods
+      .getCollectionId(parentCollectionId, conditionId, indexSet)
+      .call()
   }
 
   payoutDenominator = async (conditionId: string) => {
-    return this.conditionalTokens.payoutDenominator(conditionId)
+    return this.conditionalTokens.methods.payoutDenominator(conditionId).call()
   }
 
   payoutNumerators = async (conditionId: string, outcomeIndex: number) => {
-    return this.conditionalTokens.payoutNumerators(conditionId, outcomeIndex)
+    return this.conditionalTokens.methods.payoutNumerators(conditionId, outcomeIndex).call()
   }
 
   isApprovedForAll = async (account: string, lmsrMarketMakerAddress: string) => {
-    return this.conditionalTokens.isApprovedForAll(account, lmsrMarketMakerAddress)
+    return this.conditionalTokens.methods.isApprovedForAll(account, lmsrMarketMakerAddress).call()
   }
 
   setApprovalForAll = async (lmsrMarketMakerAddress: string, approved: boolean, from: string) => {
-    return this.conditionalTokens.setApprovalForAll(lmsrMarketMakerAddress, approved, { from })
+    return this.conditionalTokens.methods
+      .setApprovalForAll(lmsrMarketMakerAddress, approved)
+      .send({ from })
   }
 
   reportPayouts = async (questionId: string, payouts: number[], from: string) => {
-    return this.conditionalTokens.reportPayouts(questionId, payouts, { from })
+    return this.conditionalTokens.methods.reportPayouts(questionId, payouts).send({ from })
   }
 
   redeemPositions = async (
@@ -48,13 +52,9 @@ class ConditionalTokensRepo {
     indexSets: number[],
     from: string,
   ) => {
-    return this.conditionalTokens.redeemPositions(
-      collateralAddress,
-      parentCollectionId,
-      marketConditionId,
-      indexSets,
-      { from },
-    )
+    return this.conditionalTokens.methods
+      .redeemPositions(collateralAddress, parentCollectionId, marketConditionId, indexSets)
+      .send({ from })
   }
 
   // ...

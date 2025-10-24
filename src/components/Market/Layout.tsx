@@ -58,6 +58,31 @@ type LayoutProps = {
   newFeeValue: string
   setNewFeeValue: any
   currentFeePercentage: string
+  userShares: string
+  totalShares: string
+  pendingFees: string
+  sharePercentage: string
+  addLiquidity: any
+  addingLiquidity: boolean
+  removeLiquidity: any
+  removingLiquidity: boolean
+  liquidityAmount: string
+  setLiquidityAmount: any
+  sharesToRemove: string
+  setSharesToRemove: any
+  ethBalance: string
+  wethBalance: string
+  wethAllowance: string
+  wrappingEth: boolean
+  unwrappingWeth: boolean
+  approvingWeth: boolean
+  wrapAmount: string
+  unwrapAmount: string
+  setWrapAmount: any
+  setUnwrapAmount: any
+  wrapEth: any
+  unwrapWeth: any
+  approveWeth: any
 }
 
 const TradingForm: React.FC<TradingFormProps> = ({
@@ -191,6 +216,31 @@ const Layout: React.FC<LayoutProps> = ({
   newFeeValue,
   setNewFeeValue,
   currentFeePercentage,
+  userShares,
+  totalShares,
+  pendingFees,
+  sharePercentage,
+  addLiquidity,
+  addingLiquidity,
+  removeLiquidity,
+  removingLiquidity,
+  liquidityAmount,
+  setLiquidityAmount,
+  sharesToRemove,
+  setSharesToRemove,
+  ethBalance,
+  wethBalance,
+  wethAllowance,
+  wrappingEth,
+  unwrappingWeth,
+  approvingWeth,
+  wrapAmount,
+  unwrapAmount,
+  setWrapAmount,
+  setUnwrapAmount,
+  wrapEth,
+  unwrapWeth,
+  approveWeth,
 }) => {
   return (
     <Paper className={styles.condition}>
@@ -340,6 +390,303 @@ const Layout: React.FC<LayoutProps> = ({
                     </div>
                   </div>
                 )}
+              </div>
+            </>
+          )}
+
+          {/* Liquidity Provider Dashboard */}
+          {parseFloat(userShares) > 0 && (
+            <>
+              <hr style={{ margin: '20px 0', border: 'none', borderTop: '1px solid #ddd' }} />
+              <div style={{ marginTop: '20px' }}>
+                <h3 style={{ marginBottom: '15px', color: '#1976d2' }}>
+                  💧 Your Liquidity Position
+                </h3>
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                    gap: '15px',
+                    marginBottom: '15px',
+                  }}
+                >
+                  <div
+                    style={{
+                      padding: '15px',
+                      backgroundColor: '#f5f5f5',
+                      borderRadius: '8px',
+                    }}
+                  >
+                    <div style={{ fontSize: '12px', opacity: 0.7, marginBottom: '5px' }}>
+                      Your LP Shares
+                    </div>
+                    <div style={{ fontSize: '18px', fontWeight: 'bold' }}>
+                      {(parseFloat(userShares) / 1e18).toFixed(4)}
+                    </div>
+                  </div>
+                  <div
+                    style={{
+                      padding: '15px',
+                      backgroundColor: '#f5f5f5',
+                      borderRadius: '8px',
+                    }}
+                  >
+                    <div style={{ fontSize: '12px', opacity: 0.7, marginBottom: '5px' }}>
+                      Pool Ownership
+                    </div>
+                    <div style={{ fontSize: '18px', fontWeight: 'bold' }}>
+                      {(parseFloat(sharePercentage) / 100).toFixed(2)}%
+                    </div>
+                  </div>
+                  <div
+                    style={{
+                      padding: '15px',
+                      backgroundColor: '#e8f5e9',
+                      borderRadius: '8px',
+                    }}
+                  >
+                    <div style={{ fontSize: '12px', opacity: 0.7, marginBottom: '5px' }}>
+                      Pending Fees
+                    </div>
+                    <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#2e7d32' }}>
+                      {(parseFloat(pendingFees) / 1e18).toFixed(6)} WETH
+                    </div>
+                  </div>
+                </div>
+                {parseFloat(pendingFees) > 0 && (
+                  <Button
+                    variant="contained"
+                    onClick={withdrawFees}
+                    disabled={withdrawingFees}
+                    style={{ backgroundColor: '#4caf50', marginBottom: '10px' }}
+                  >
+                    {withdrawingFees ? 'Claiming...' : '💰 Claim Fees'}
+                  </Button>
+                )}
+              </div>
+            </>
+          )}
+
+          {/* WETH Preparation Widget */}
+          {isMarketRunning && (
+            <>
+              <hr style={{ margin: '20px 0', border: 'none', borderTop: '1px solid #ddd' }} />
+              <div
+                style={{
+                  marginTop: '20px',
+                  padding: '15px',
+                  backgroundColor: '#f5f5f5',
+                  borderRadius: '8px',
+                }}
+              >
+                <h3 style={{ marginBottom: '15px', color: '#9c27b0' }}>💰 WETH Preparation</h3>
+                <p style={{ fontSize: '14px', opacity: 0.8, marginBottom: '15px' }}>
+                  Before adding liquidity, ensure you have enough WETH (Wrapped ETH) and approve the
+                  MarketMaker contract.
+                </p>
+
+                {/* Balance Display */}
+                <div
+                  style={{ display: 'flex', gap: '20px', marginBottom: '15px', fontSize: '14px' }}
+                >
+                  <div>
+                    <strong>ETH Balance:</strong>{' '}
+                    {(parseFloat(ethBalance || '0') / 1e18).toFixed(4)} ETH
+                  </div>
+                  <div>
+                    <strong>WETH Balance:</strong>{' '}
+                    <span
+                      style={{ color: parseFloat(wethBalance || '0') > 0 ? '#4caf50' : '#666' }}
+                    >
+                      {(parseFloat(wethBalance || '0') / 1e18).toFixed(4)} WETH
+                    </span>
+                  </div>
+                </div>
+
+                {/* Wrap ETH Section */}
+                <div style={{ marginBottom: '15px' }}>
+                  <h4 style={{ marginBottom: '10px', fontSize: '14px' }}>
+                    Step 1a: Wrap ETH → WETH
+                  </h4>
+                  <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                    <TextField
+                      variant="filled"
+                      label="ETH Amount to Wrap"
+                      type="number"
+                      value={wrapAmount}
+                      onChange={(e) => setWrapAmount(e.target.value)}
+                      disabled={wrappingEth}
+                      style={{ flex: 1 }}
+                      inputProps={{ min: 0, step: 0.001 }}
+                    />
+                    <Button
+                      variant="contained"
+                      onClick={wrapEth}
+                      disabled={wrappingEth || !wrapAmount || parseFloat(wrapAmount) <= 0}
+                      style={{ backgroundColor: '#9c27b0', color: 'white' }}
+                    >
+                      {wrappingEth ? 'Wrapping...' : 'Wrap ETH'}
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Unwrap WETH Section */}
+                <div style={{ marginBottom: '15px' }}>
+                  <h4 style={{ marginBottom: '10px', fontSize: '14px' }}>
+                    Step 1b: Unwrap WETH → ETH (Optional)
+                  </h4>
+                  <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                    <TextField
+                      variant="filled"
+                      label="WETH Amount to Unwrap"
+                      type="number"
+                      value={unwrapAmount}
+                      onChange={(e) => setUnwrapAmount(e.target.value)}
+                      disabled={unwrappingWeth}
+                      style={{ flex: 1 }}
+                      inputProps={{ min: 0, step: 0.001 }}
+                    />
+                    <Button
+                      variant="contained"
+                      onClick={unwrapWeth}
+                      disabled={unwrappingWeth || !unwrapAmount || parseFloat(unwrapAmount) <= 0}
+                      style={{ backgroundColor: '#673ab7', color: 'white' }}
+                    >
+                      {unwrappingWeth ? 'Unwrapping...' : 'Unwrap WETH'}
+                    </Button>
+                  </div>
+                  <div style={{ fontSize: '12px', opacity: 0.7, marginTop: '5px' }}>
+                    💡 Convert WETH back to ETH if you have excess WETH
+                  </div>
+                </div>
+
+                {/* Approve WETH Section */}
+                <div style={{ marginBottom: '10px' }}>
+                  <h4 style={{ marginBottom: '10px', fontSize: '14px' }}>
+                    Step 2: Approve WETH Spending
+                  </h4>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <div style={{ flex: 1, fontSize: '13px' }}>
+                      <strong>Current Allowance:</strong>{' '}
+                      <span
+                        style={{
+                          color: parseFloat(wethAllowance || '0') > 0 ? '#4caf50' : '#ff9800',
+                          fontWeight: 'bold',
+                        }}
+                      >
+                        {parseFloat(wethAllowance || '0') > 1e30
+                          ? '∞ (Unlimited)'
+                          : `${(parseFloat(wethAllowance || '0') / 1e18).toFixed(4)} WETH`}
+                      </span>
+                    </div>
+                    <Button
+                      variant="contained"
+                      onClick={approveWeth}
+                      disabled={
+                        approvingWeth ||
+                        parseFloat(wethAllowance || '0') > 1e30 ||
+                        !liquidityAmount ||
+                        parseFloat(liquidityAmount) <= 0
+                      }
+                      style={{
+                        backgroundColor:
+                          parseFloat(wethAllowance || '0') > 1e30 ? '#4caf50' : '#ff9800',
+                        color: 'white',
+                      }}
+                    >
+                      {approvingWeth
+                        ? 'Approving...'
+                        : parseFloat(wethAllowance || '0') > 1e30
+                        ? '✓ Approved'
+                        : 'Approve WETH'}
+                    </Button>
+                  </div>
+                  {(!liquidityAmount || parseFloat(liquidityAmount) <= 0) && (
+                    <div style={{ fontSize: '12px', color: '#ff9800', marginTop: '5px' }}>
+                      ⚠️ Enter liquidity amount below first
+                    </div>
+                  )}
+                </div>
+              </div>
+            </>
+          )}
+
+          {/* Add Liquidity Section */}
+          {isMarketRunning && (
+            <>
+              <hr style={{ margin: '20px 0', border: 'none', borderTop: '1px solid #ddd' }} />
+              <div style={{ marginTop: '20px' }}>
+                <h3 style={{ marginBottom: '15px', color: '#2196f3' }}>➕ Add Liquidity</h3>
+                <p style={{ fontSize: '14px', opacity: 0.8, marginBottom: '10px' }}>
+                  Add collateral to the pool and earn trading fees proportional to your share.
+                </p>
+                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                  <TextField
+                    variant="filled"
+                    label="WETH Amount"
+                    type="number"
+                    value={liquidityAmount}
+                    onChange={(e) => setLiquidityAmount(e.target.value)}
+                    disabled={addingLiquidity}
+                    style={{ flex: 1 }}
+                    inputProps={{ min: 0, step: 0.001 }}
+                  />
+                  <Button
+                    variant="contained"
+                    onClick={addLiquidity}
+                    disabled={
+                      addingLiquidity || !liquidityAmount || parseFloat(liquidityAmount) <= 0
+                    }
+                    style={{ backgroundColor: '#2196f3' }}
+                  >
+                    {addingLiquidity ? 'Adding...' : 'Add Liquidity'}
+                  </Button>
+                </div>
+                <div style={{ fontSize: '12px', opacity: 0.7, marginTop: '10px' }}>
+                  Total Pool Shares: {(parseFloat(totalShares) / 1e18).toFixed(4)}
+                </div>
+              </div>
+            </>
+          )}
+
+          {/* Remove Liquidity Section */}
+          {isMarketPaused && parseFloat(userShares) > 0 && (
+            <>
+              <hr style={{ margin: '20px 0', border: 'none', borderTop: '1px solid #ddd' }} />
+              <div style={{ marginTop: '20px' }}>
+                <h3 style={{ marginBottom: '15px', color: '#ff9800' }}>➖ Remove Liquidity</h3>
+                <p style={{ fontSize: '14px', opacity: 0.8, marginBottom: '10px' }}>
+                  Market is paused. You can now remove your liquidity.
+                </p>
+                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                  <TextField
+                    variant="filled"
+                    label="Shares to Remove"
+                    type="number"
+                    value={sharesToRemove}
+                    onChange={(e) => setSharesToRemove(e.target.value)}
+                    disabled={removingLiquidity}
+                    style={{ flex: 1 }}
+                    inputProps={{
+                      min: 0,
+                      max: parseFloat(userShares) / 1e18,
+                      step: 0.0001,
+                    }}
+                  />
+                  <Button
+                    variant="contained"
+                    onClick={removeLiquidity}
+                    disabled={
+                      removingLiquidity || !sharesToRemove || parseFloat(sharesToRemove) <= 0
+                    }
+                    style={{ backgroundColor: '#ff9800' }}
+                  >
+                    {removingLiquidity ? 'Removing...' : 'Remove Liquidity'}
+                  </Button>
+                </div>
+                <div style={{ fontSize: '12px', opacity: 0.7, marginTop: '10px' }}>
+                  Your Shares: {(parseFloat(userShares) / 1e18).toFixed(4)}
+                </div>
               </div>
             </>
           )}

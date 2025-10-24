@@ -35,6 +35,26 @@ const Market: React.FC<MarketProps> = ({ web3, account, marketConfig }) => {
   const [newFeeValue, setNewFeeValue] = useState<string>('')
   const [currentFee, setCurrentFee] = useState<number>(0)
 
+  // LP state
+  const [userShares, setUserShares] = useState<string>('0')
+  const [totalShares, setTotalShares] = useState<string>('0')
+  const [pendingFees, setPendingFees] = useState<string>('0')
+  const [sharePercentage, setSharePercentage] = useState<string>('0')
+  const [addingLiquidity, setAddingLiquidity] = useState<boolean>(false)
+  const [removingLiquidity, setRemovingLiquidity] = useState<boolean>(false)
+  const [liquidityAmount, setLiquidityAmount] = useState<string>('')
+  const [sharesToRemove, setSharesToRemove] = useState<string>('')
+
+  // WETH preparation state
+  const [ethBalance, setEthBalance] = useState<string>('0')
+  const [wethBalance, setWethBalance] = useState<string>('0')
+  const [wethAllowance, setWethAllowance] = useState<string>('0')
+  const [wrappingEth, setWrappingEth] = useState<boolean>(false)
+  const [unwrappingWeth, setUnwrappingWeth] = useState<boolean>(false)
+  const [approvingWeth, setApprovingWeth] = useState<boolean>(false)
+  const [wrapAmount, setWrapAmount] = useState<string>('')
+  const [unwrapAmount, setUnwrapAmount] = useState<string>('')
+
   useEffect(() => {
     const init = async () => {
       try {
@@ -54,6 +74,12 @@ const Market: React.FC<MarketProps> = ({ web3, account, marketConfig }) => {
         // Get current fee
         const feeValue = await marketMakersRepo.fee()
         setCurrentFee(feeValue)
+
+        // Load LP info
+        await loadLPInfo()
+
+        // Load WETH info
+        await loadWethInfo()
 
         setIsConditionLoaded(true)
       } catch (err) {
@@ -156,6 +182,244 @@ const Market: React.FC<MarketProps> = ({ web3, account, marketConfig }) => {
     }
   }
 
+  const loadLPInfo = async () => {
+    try {
+      const shares = await marketMakersRepo.liquidityShares(account)
+      const total = await marketMakersRepo.totalShares()
+      const pending = await marketMakersRepo.getPendingFees(account)
+      const percentage = await marketMakersRepo.getSharePercentage(account)
+
+      setUserShares(shares.toString())
+      setTotalShares(total.toString())
+      setPendingFees(pending.toString())
+      setSharePercentage(percentage.toString())
+    } catch (err) {
+      console.error('Error loading LP info:', err)
+    }
+  }
+
+  const loadWethInfo = async () => {
+    try {
+      const collateral = await marketMakersRepo.getCollateralToken()
+
+      // Get ETH balance
+      const ethBal = await web3.eth.getBalance(account)
+      setEthBalance(ethBal)
+
+      // Get WETH balance
+      const wethBal = await collateral.contract.methods.balanceOf(account).call()
+      setWethBalance(wethBal)
+
+      // Get WETH allowance for market maker
+      const allowance = await collateral.contract.methods
+        .allowance(account, marketConfig.lmsrAddress)
+        .call()
+      setWethAllowance(allowance)
+    } catch (err) {
+      console.error('Error loading WETH info:', err)
+    }
+  }
+
+  const wrapEth = async () => {
+    if (!wrapAmount || parseFloat(wrapAmount) <= 0) {
+      alert('Please enter a valid amount to wrap')
+      return
+    }
+
+    setWrappingEth(true)
+    try {
+      const collateral = await marketMakersRepo.getCollateralToken()
+      const amount = new BigNumber(wrapAmount).multipliedBy(
+        new BigNumber(Math.pow(10, collateral.decimals)),
+      )
+
+      // Check ETH balance
+      const ethBal = await web3.eth.getBalance(account)
+      if (new BigNumber(ethBal).lt(amount)) {
+        alert(
+          `Insufficient ETH balance. You have ${new BigNumber(ethBal)
+            .dividedBy(Math.pow(10, 18))
+            .toFixed(4)} ETH but need ${wrapAmount} ETH`,
+        )
+        setWrappingEth(false)
+        return
+      }
+
+      // Wrap ETH to WETH
+      await collateral.contract.methods.deposit().send({ value: amount.toString(), from: account })
+
+      alert(`Successfully wrapped ${wrapAmount} ETH to WETH!`)
+      setWrapAmount('')
+      await loadWethInfo()
+    } catch (err: any) {
+      console.error('Error wrapping ETH:', err)
+      alert(`Error wrapping ETH: ${err.message || 'Transaction failed'}`)
+    } finally {
+      setWrappingEth(false)
+    }
+  }
+
+  const unwrapWeth = async () => {
+    if (!unwrapAmount || parseFloat(unwrapAmount) <= 0) {
+      alert('Please enter a valid amount to unwrap')
+      return
+    }
+
+    setUnwrappingWeth(true)
+    try {
+      const collateral = await marketMakersRepo.getCollateralToken()
+      const amount = new BigNumber(unwrapAmount).multipliedBy(
+        new BigNumber(Math.pow(10, collateral.decimals)),
+      )
+
+      // Check WETH balance
+      const wethBal = await collateral.contract.methods.balanceOf(account).call()
+      if (new BigNumber(wethBal).lt(amount)) {
+        alert(
+          `Insufficient WETH balance. You have ${new BigNumber(wethBal)
+            .dividedBy(Math.pow(10, collateral.decimals))
+            .toFixed(4)} WETH but need ${unwrapAmount} WETH`,
+        )
+        setUnwrappingWeth(false)
+        return
+      }
+
+      // Unwrap WETH to ETH
+      await collateral.contract.methods.withdraw(amount.toString()).send({ from: account })
+
+      alert(`Successfully unwrapped ${unwrapAmount} WETH to ETH!`)
+      setUnwrapAmount('')
+      await loadWethInfo()
+    } catch (err: any) {
+      console.error('Error unwrapping WETH:', err)
+      alert(`Error unwrapping WETH: ${err.message || 'Transaction failed'}`)
+    } finally {
+      setUnwrappingWeth(false)
+    }
+  }
+
+  const approveWeth = async () => {
+    if (!liquidityAmount || parseFloat(liquidityAmount) <= 0) {
+      alert('Please enter the liquidity amount first')
+      return
+    }
+
+    setApprovingWeth(true)
+    try {
+      const collateral = await marketMakersRepo.getCollateralToken()
+      const MAX_UINT256 = '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'
+
+      // Approve maximum amount to avoid repeated approvals
+      await collateral.contract.methods
+        .approve(marketConfig.lmsrAddress, MAX_UINT256)
+        .send({ from: account })
+
+      alert('Successfully approved MarketMaker to spend your WETH!')
+      await loadWethInfo()
+    } catch (err: any) {
+      console.error('Error approving WETH:', err)
+      alert(`Error approving WETH: ${err.message || 'Transaction failed'}`)
+    } finally {
+      setApprovingWeth(false)
+    }
+  }
+
+  const addLiquidity = async () => {
+    if (!liquidityAmount || parseFloat(liquidityAmount) <= 0) {
+      alert('Please enter a valid amount')
+      return
+    }
+
+    if (marketInfo.stage !== 'Running') {
+      alert('Cannot add liquidity - market is not active')
+      return
+    }
+
+    setAddingLiquidity(true)
+    try {
+      const collateral = await marketMakersRepo.getCollateralToken()
+      const amount = new BigNumber(liquidityAmount).multipliedBy(
+        new BigNumber(Math.pow(10, collateral.decimals)),
+      )
+
+      // Check WETH balance
+      const wethBal = await collateral.contract.methods.balanceOf(account).call()
+      if (new BigNumber(wethBal).lt(amount)) {
+        const required = new BigNumber(amount)
+          .dividedBy(Math.pow(10, collateral.decimals))
+          .toFixed(4)
+        const available = new BigNumber(wethBal)
+          .dividedBy(Math.pow(10, collateral.decimals))
+          .toFixed(4)
+        alert(
+          `Insufficient WETH balance. You have ${available} WETH but need ${required} WETH. Please wrap more ETH first.`,
+        )
+        setAddingLiquidity(false)
+        return
+      }
+
+      // Check allowance and approve if needed
+      const allowance = await collateral.contract.methods
+        .allowance(account, marketInfo.lmsrAddress)
+        .call()
+      if (new BigNumber(allowance).lt(amount)) {
+        alert(
+          'Insufficient WETH allowance. Please approve the MarketMaker to spend your WETH first.',
+        )
+        setAddingLiquidity(false)
+        return
+      }
+
+      const tx = await marketMakersRepo.addLiquidity(amount.toString(), account)
+      console.log({ tx })
+
+      alert('Liquidity added successfully!')
+      setLiquidityAmount('')
+      await getMarketInfo()
+      await loadLPInfo()
+      await loadWethInfo()
+    } catch (err: any) {
+      console.error('Error adding liquidity:', err)
+      alert(`Error adding liquidity: ${err.message || 'Unknown error'}`)
+    } finally {
+      setAddingLiquidity(false)
+    }
+  }
+
+  const removeLiquidity = async () => {
+    if (!sharesToRemove || parseFloat(sharesToRemove) <= 0) {
+      alert('Please enter a valid amount of shares')
+      return
+    }
+
+    if (marketInfo.stage !== 'Paused') {
+      alert('Cannot remove liquidity - market must be paused by owner first')
+      return
+    }
+
+    const shares = new BigNumber(sharesToRemove)
+    if (shares.gt(userShares)) {
+      alert('Insufficient shares')
+      return
+    }
+
+    setRemovingLiquidity(true)
+    try {
+      const tx = await marketMakersRepo.removeLiquidity(sharesToRemove, account)
+      console.log({ tx })
+
+      alert('Liquidity removed successfully!')
+      setSharesToRemove('')
+      await getMarketInfo()
+      await loadLPInfo()
+    } catch (err: any) {
+      console.error('Error removing liquidity:', err)
+      alert(`Error removing liquidity: ${err.message || 'Unknown error'}`)
+    } finally {
+      setRemovingLiquidity(false)
+    }
+  }
+
   const buy = async () => {
     const collateral = await marketMakersRepo.getCollateralToken()
     const formatedAmount = new BigNumber(selectedAmount).multipliedBy(
@@ -174,18 +438,22 @@ const Market: React.FC<MarketProps> = ({ web3, account, marketConfig }) => {
     // This avoids issues with rounding differences between client and contract calcNetCost
     const costForDeposit = new BigNumber(Math.ceil(cost * 1.01)) // Small buffer for deposit
 
-    const collateralBalance = await collateral.contract.balanceOf(account)
+    const collateralBalance = await collateral.contract.methods.balanceOf(account).call()
     if (costForDeposit.gt(collateralBalance)) {
       // Need to deposit ETH to get WETH (use buffered amount for safety)
-      await collateral.contract.deposit({ value: costForDeposit.toString(), from: account })
+      await collateral.contract.methods
+        .deposit()
+        .send({ value: costForDeposit.toString(), from: account })
     }
 
     // Check allowance and approve max uint256 if needed (one-time approval)
-    const allowance = await collateral.contract.allowance(account, marketInfo.lmsrAddress)
+    const allowance = await collateral.contract.methods
+      .allowance(account, marketInfo.lmsrAddress)
+      .call()
     if (new BigNumber(allowance).lt(costForDeposit)) {
       // Approve maximum amount to avoid repeated approvals
       const MAX_UINT256 = '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'
-      await collateral.contract.approve(marketInfo.lmsrAddress, MAX_UINT256, {
+      await collateral.contract.methods.approve(marketInfo.lmsrAddress, MAX_UINT256).send({
         from: account,
       })
     }
@@ -269,7 +537,7 @@ const Market: React.FC<MarketProps> = ({ web3, account, marketConfig }) => {
       const collateral = await marketMakersRepo.getCollateralToken()
 
       // Get current fee balance in the market maker contract
-      const feeBalance = await collateral.contract.balanceOf(marketInfo.lmsrAddress)
+      const feeBalance = await collateral.contract.methods.balanceOf(marketInfo.lmsrAddress).call()
 
       if (new BigNumber(feeBalance).isZero()) {
         alert('No fees available to withdraw')
@@ -451,6 +719,31 @@ const Market: React.FC<MarketProps> = ({ web3, account, marketConfig }) => {
       newFeeValue={newFeeValue}
       setNewFeeValue={setNewFeeValue}
       currentFeePercentage={currentFeePercentage}
+      userShares={userShares}
+      totalShares={totalShares}
+      pendingFees={pendingFees}
+      sharePercentage={sharePercentage}
+      addLiquidity={addLiquidity}
+      addingLiquidity={addingLiquidity}
+      removeLiquidity={removeLiquidity}
+      removingLiquidity={removingLiquidity}
+      liquidityAmount={liquidityAmount}
+      setLiquidityAmount={setLiquidityAmount}
+      sharesToRemove={sharesToRemove}
+      setSharesToRemove={setSharesToRemove}
+      ethBalance={ethBalance}
+      wethBalance={wethBalance}
+      wethAllowance={wethAllowance}
+      wrappingEth={wrappingEth}
+      unwrappingWeth={unwrappingWeth}
+      approvingWeth={approvingWeth}
+      wrapAmount={wrapAmount}
+      unwrapAmount={unwrapAmount}
+      setWrapAmount={setWrapAmount}
+      setUnwrapAmount={setUnwrapAmount}
+      wrapEth={wrapEth}
+      unwrapWeth={unwrapWeth}
+      approveWeth={approveWeth}
     />
   )
 }

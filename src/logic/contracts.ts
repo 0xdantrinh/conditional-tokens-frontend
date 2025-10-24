@@ -1,7 +1,6 @@
-import ConditionalTokens from '../abi/ConditionalTokens.json'
-import LMSRMarketMaker from '../abi/LMSRMarketMaker.json'
-import WETH9 from '../abi/WETH9.json'
-const TruffleContract = require('@truffle/contract')
+import ConditionalTokensABI from '../abi/ConditionalTokens.json'
+import LMSRMarketMakerABI from '../abi/LMSRMarketMaker.json'
+import WETH9ABI from '../abi/WETH9.json'
 
 let contracts: Object | undefined
 let lmsrAddressCache: string | undefined
@@ -13,31 +12,47 @@ const resetContracts = () => {
   providerAccountCache = undefined
 }
 
-const loadLMSRMarketMakerContract = async (web3: any) => {
-  let lmsrMarketMakerContract
-  if (!contracts) {
-    lmsrMarketMakerContract = TruffleContract(LMSRMarketMaker)
-    lmsrMarketMakerContract.setProvider(web3.currentProvider)
+// Helper to extract ABI from Forge or Truffle format
+const getABI = (artifact: any) => {
+  // If it's already just an ABI array, return it
+  if (Array.isArray(artifact)) {
+    return artifact
   }
-  return lmsrMarketMakerContract
+  // If it has an abi field (Forge/Truffle format), extract it
+  if (artifact.abi) {
+    return artifact.abi
+  }
+  throw new Error('Invalid contract artifact format')
 }
 
-const loadConditionalTokensContract = async (web3: any) => {
-  let conditionalTokensContract
-  if (!contracts) {
-    conditionalTokensContract = TruffleContract(ConditionalTokens)
-    conditionalTokensContract.setProvider(web3.currentProvider)
+const loadLMSRMarketMakerContract = async (web3: any, address: string) => {
+  try {
+    const abi = getABI(LMSRMarketMakerABI)
+    return new web3.eth.Contract(abi, address)
+  } catch (error) {
+    console.error('Error loading LMSR Market Maker contract:', error)
+    return null
   }
-  return conditionalTokensContract
 }
 
-const loadWETH9Contract = async (web3: any) => {
-  let weth9Contract
-  if (!contracts) {
-    weth9Contract = TruffleContract(WETH9)
-    weth9Contract.setProvider(web3.currentProvider)
+const loadConditionalTokensContract = async (web3: any, address: string) => {
+  try {
+    const abi = getABI(ConditionalTokensABI)
+    return new web3.eth.Contract(abi, address)
+  } catch (error) {
+    console.error('Error loading Conditional Tokens contract:', error)
+    return null
   }
-  return weth9Contract
+}
+
+const loadWETH9Contract = async (web3: any, address: string) => {
+  try {
+    const abi = getABI(WETH9ABI)
+    return new web3.eth.Contract(abi, address)
+  } catch (error) {
+    console.error('Error loading WETH9 contract:', error)
+    return null
+  }
 }
 
 const loadContracts = async (web3: any, lmsrAddress: string, account: string) => {
@@ -52,15 +67,31 @@ const loadContracts = async (web3: any, lmsrAddress: string, account: string) =>
       providerAccountCache = account
       lmsrAddressCache = lmsrAddress
 
-      const LMSRMarketMakerContract = await loadLMSRMarketMakerContract(web3)
-      const ConditionalTokensContract = await loadConditionalTokensContract(web3)
-      const WETH9Contract = await loadWETH9Contract(web3)
+      // Create LMSR Market Maker contract instance
+      const lmsrMarketMaker = await loadLMSRMarketMakerContract(web3, lmsrAddress)
+      if (!lmsrMarketMaker) {
+        throw new Error('Failed to load LMSR Market Maker contract')
+      }
 
-      const lmsrMarketMaker = await LMSRMarketMakerContract.at(lmsrAddress)
-      const conditionalTokens = await ConditionalTokensContract.at(await lmsrMarketMaker.pmSystem())
+      // Get addresses for other contracts
+      const pmSystemAddress = await lmsrMarketMaker.methods.pmSystem().call()
+      const collateralTokenAddress = await lmsrMarketMaker.methods.collateralToken().call()
+
+      // Create Conditional Tokens contract instance
+      const conditionalTokens = await loadConditionalTokensContract(web3, pmSystemAddress)
+      if (!conditionalTokens) {
+        throw new Error('Failed to load Conditional Tokens contract')
+      }
+
+      // Create WETH9 contract instance
+      const collateralTokenContract = await loadWETH9Contract(web3, collateralTokenAddress)
+      if (!collateralTokenContract) {
+        throw new Error('Failed to load WETH9 contract')
+      }
+
       const collateralToken = {
-        address: await lmsrMarketMaker.collateralToken(),
-        contract: await WETH9Contract.at(await lmsrMarketMaker.collateralToken()),
+        address: collateralTokenAddress,
+        contract: collateralTokenContract,
         name: 'Wrapped Ether',
         decimals: 18,
         symbol: 'WETH',
