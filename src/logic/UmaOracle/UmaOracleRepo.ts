@@ -2,6 +2,7 @@ import Web3 from 'web3'
 import { Contract } from 'web3-eth-contract'
 import { AbiItem } from 'web3-utils'
 import UmaCtfAdapterABI from 'src/abi/UmaCtfAdapter.json'
+import OptimisticOracleV2ABI from 'src/abi/IOptimisticOracleV2.json'
 import { UMA_CONFIG } from 'src/conf/uma'
 
 export interface QuestionData {
@@ -41,12 +42,17 @@ export interface ParsedAncillaryData {
 export default class UmaOracleRepo {
   private web3: Web3
   private adapter: Contract
+  private optimisticOracle: Contract
 
   constructor(web3: Web3) {
     this.web3 = web3
     this.adapter = new web3.eth.Contract(
       UmaCtfAdapterABI.abi as AbiItem[],
       UMA_CONFIG.BASE_SEPOLIA.umaCtfAdapter,
+    )
+    this.optimisticOracle = new web3.eth.Contract(
+      OptimisticOracleV2ABI.abi as AbiItem[],
+      UMA_CONFIG.BASE_SEPOLIA.optimisticOracle,
     )
   }
 
@@ -95,6 +101,22 @@ export default class UmaOracleRepo {
     return await this.adapter.methods.isInitialized(questionID).call()
   }
 
+  // Check if question has a price request but no proposal yet (ready to propose)
+  canPropose = async (questionID: string): Promise<boolean> => {
+    try {
+      const question = await this.getQuestion(questionID)
+      // Question is initialized but not resolved and requestTimestamp is 0 means no proposal yet
+      return (
+        question.requestTimestamp !== '0' &&
+        !question.resolved &&
+        !question.paused &&
+        !question.reset
+      )
+    } catch (err) {
+      return false
+    }
+  }
+
   // Get expected payouts for a question
   getExpectedPayouts = async (questionID: string): Promise<string[]> => {
     try {
@@ -108,6 +130,87 @@ export default class UmaOracleRepo {
   // Resolve a question
   resolve = async (questionID: string, from: string): Promise<any> => {
     return await this.adapter.methods.resolve(questionID).send({ from })
+  }
+
+  // Check if a question needs a proposal (no one has proposed yet)
+  needsProposal = async (questionID: string): Promise<boolean> => {
+    try {
+      const question = await this.getQuestion(questionID)
+      // If initialized but requestTimestamp is 0, it means no price request has been made yet
+      // This happens after initialize() is called but before anyone proposes
+      return question.requestTimestamp === '0' && !question.resolved
+    } catch (err) {
+      return false
+    }
+  }
+
+  // Get the Optimistic Oracle contract instance for direct interaction
+  // Users need to call proposePrice() on the OO contract to submit answers
+  getOptimisticOracleAddress = (): string => {
+    return UMA_CONFIG.BASE_SEPOLIA.optimisticOracle
+  }
+
+  // Get oracle request from OptimisticOracleV2
+  getOracleRequest = async (
+    questionID: string,
+  ): Promise<{
+    proposer: string
+    disputer: string
+    currency: string
+    settled: boolean
+    proposedPrice: string
+    resolvedPrice: string
+    expirationTime: string
+    reward: string
+    bond: string
+  } | null> => {
+    try {
+      const questionData = await this.getQuestion(questionID)
+      if (questionData.requestTimestamp === '0') return null
+
+      const request = await this.optimisticOracle.methods
+        .getRequest(
+          UMA_CONFIG.BASE_SEPOLIA.umaCtfAdapter,
+          UMA_CONFIG.BASE_SEPOLIA.priceIdentifier,
+          questionData.requestTimestamp,
+          questionData.ancillaryData,
+        )
+        .call()
+
+      return {
+        proposer: request[0],
+        disputer: request[1],
+        currency: request[2],
+        settled: request[3],
+        proposedPrice: request[6],
+        resolvedPrice: request[7],
+        expirationTime: request[8],
+        reward: request[9],
+        bond: request[4][5], // requestSettings.bond
+      }
+    } catch (err) {
+      console.error('Error getting oracle request:', err)
+      return null
+    }
+  }
+
+  // Propose price to OptimisticOracleV2 (NOT the adapter!)
+  proposePrice = async (
+    questionID: string,
+    proposedPrice: string, // '0' for NO, '1000000000000000000' for YES
+    from: string,
+  ): Promise<any> => {
+    const questionData = await this.getQuestion(questionID)
+
+    return await this.optimisticOracle.methods
+      .proposePrice(
+        UMA_CONFIG.BASE_SEPOLIA.umaCtfAdapter, // requester
+        UMA_CONFIG.BASE_SEPOLIA.priceIdentifier, // identifier
+        questionData.requestTimestamp, // timestamp
+        questionData.ancillaryData, // ancillaryData
+        proposedPrice, // proposedPrice
+      )
+      .send({ from })
   }
 
   // Helper to fetch events in chunks to avoid block range limits
