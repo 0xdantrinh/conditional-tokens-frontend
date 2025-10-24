@@ -69,70 +69,91 @@ const Market: React.FC<MarketProps> = ({ web3, account, marketConfig }) => {
   const getMarketInfo = async () => {
     if (!process.env.REACT_APP_ORACLE_ADDRESS) return
 
-    // Default to binary outcome if outcomes not specified
-    const outcomeCount = marketConfig.outcomes?.length || 2
-    const defaultOutcomes = [
-      { title: 'Yes', short: 'Yes' },
-      { title: 'No', short: 'No' },
-    ]
+    try {
+      // Use outcomeSlotCount from config if available, otherwise use outcomes array length, default to 2
+      const outcomeCount = marketConfig.outcomeSlotCount || marketConfig.outcomes?.length || 2
+      console.log('Loading market with outcomeCount:', outcomeCount)
 
-    const collateral = await marketMakersRepo.getCollateralToken()
-    const conditionId = getConditionId(
-      process.env.REACT_APP_ORACLE_ADDRESS,
-      marketConfig.questionId,
-      outcomeCount,
-    )
-    const payoutDenominator = await conditionalTokensRepo.payoutDenominator(conditionId)
+      const defaultOutcomes = [
+        { title: 'Yes', short: 'Yes' },
+        { title: 'No', short: 'No' },
+      ]
 
-    const outcomes = []
-    for (let outcomeIndex = 0; outcomeIndex < outcomeCount; outcomeIndex++) {
-      const indexSet = (
-        outcomeIndex === 0 ? 1 : parseInt(Math.pow(10, outcomeIndex).toString(), 2)
-      ).toString()
-      const collectionId = await conditionalTokensRepo.getCollectionId(
-        `0x${'0'.repeat(64)}`,
-        conditionId,
-        indexSet,
-      )
-      const positionId = getPositionId(collateral.address, collectionId)
-      const probability = await marketMakersRepo.calcMarginalPrice(outcomeIndex)
-      const balance = await conditionalTokensRepo.balanceOf(account, positionId)
-      const payoutNumerator = await conditionalTokensRepo.payoutNumerators(
-        conditionId,
-        outcomeIndex,
-      )
+      const collateral = await marketMakersRepo.getCollateralToken()
 
-      const outcomeData = marketConfig.outcomes?.[outcomeIndex] || defaultOutcomes[outcomeIndex]
-      const outcome = {
-        index: outcomeIndex,
-        title: outcomeData?.title || `Outcome ${outcomeIndex + 1}`,
-        probability: new BigNumber(probability)
-          .dividedBy(Math.pow(2, 64))
-          .multipliedBy(100)
-          .toFixed(2),
-        balance: new BigNumber(balance).dividedBy(Math.pow(10, collateral.decimals)),
-        payoutNumerator: payoutNumerator,
+      // Use conditionId from config if available, otherwise calculate it
+      const conditionId =
+        marketConfig.conditionId ||
+        getConditionId(process.env.REACT_APP_ORACLE_ADDRESS, marketConfig.questionId, outcomeCount)
+      console.log('ConditionId:', conditionId)
+
+      const payoutDenominator = await conditionalTokensRepo.payoutDenominator(conditionId)
+      console.log('PayoutDenominator:', payoutDenominator.toString())
+
+      const outcomes = []
+      for (let outcomeIndex = 0; outcomeIndex < outcomeCount; outcomeIndex++) {
+        console.log(`Loading outcome ${outcomeIndex}...`)
+
+        const indexSet = (
+          outcomeIndex === 0 ? 1 : parseInt(Math.pow(10, outcomeIndex).toString(), 2)
+        ).toString()
+        const collectionId = await conditionalTokensRepo.getCollectionId(
+          `0x${'0'.repeat(64)}`,
+          conditionId,
+          indexSet,
+        )
+        const positionId = getPositionId(collateral.address, collectionId)
+
+        console.log(`Calling calcMarginalPrice(${outcomeIndex})...`)
+        const probability = await marketMakersRepo.calcMarginalPrice(outcomeIndex)
+
+        const balance = await conditionalTokensRepo.balanceOf(account, positionId)
+        const payoutNumerator = await conditionalTokensRepo.payoutNumerators(
+          conditionId,
+          outcomeIndex,
+        )
+
+        // Handle both string arrays and object arrays for outcomes
+        const outcomeData = marketConfig.outcomes?.[outcomeIndex] || defaultOutcomes[outcomeIndex]
+        const outcomeTitle =
+          typeof outcomeData === 'string'
+            ? outcomeData
+            : outcomeData?.title || `Outcome ${outcomeIndex + 1}`
+
+        const outcome = {
+          index: outcomeIndex,
+          title: outcomeTitle,
+          probability: new BigNumber(probability)
+            .dividedBy(Math.pow(2, 64))
+            .multipliedBy(100)
+            .toFixed(2),
+          balance: new BigNumber(balance).dividedBy(Math.pow(10, collateral.decimals)),
+          payoutNumerator: payoutNumerator,
+        }
+        outcomes.push(outcome)
       }
-      outcomes.push(outcome)
+
+      const marketData = {
+        lmsrAddress: marketConfig.lmsrAddress,
+        title: marketConfig.title,
+        category: marketConfig.category,
+        description: marketConfig.description || '',
+        outcomes,
+        stage: MarketStage[await marketMakersRepo.stage()],
+        questionId: marketConfig.questionId,
+        conditionId: conditionId,
+        payoutDenominator: payoutDenominator,
+      }
+
+      setMarketInfo(marketData)
+
+      // Update current fee
+      const feeValue = await marketMakersRepo.fee()
+      setCurrentFee(feeValue)
+    } catch (err) {
+      console.error('Error in getMarketInfo:', err)
+      throw err
     }
-
-    const marketData = {
-      lmsrAddress: marketConfig.lmsrAddress,
-      title: marketConfig.title,
-      category: marketConfig.category,
-      description: marketConfig.description || '',
-      outcomes,
-      stage: MarketStage[await marketMakersRepo.stage()],
-      questionId: marketConfig.questionId,
-      conditionId: conditionId,
-      payoutDenominator: payoutDenominator,
-    }
-
-    setMarketInfo(marketData)
-
-    // Update current fee
-    const feeValue = await marketMakersRepo.fee()
-    setCurrentFee(feeValue)
   }
 
   const buy = async () => {
