@@ -3,12 +3,14 @@ const assert = require('assert')
 class MarketMakersRepo {
   lmsrMarketMaker: any
   collateralToken: any
+  account: string | undefined
 
   constructor(contracts: any) {
     assert(contracts, '"contracts" is required')
 
     this.lmsrMarketMaker = contracts.lmsrMarketMaker
     this.collateralToken = contracts.collateralToken
+    this.account = contracts.account
   }
 
   getAddress = async () => {
@@ -44,6 +46,10 @@ class MarketMakersRepo {
   }
 
   calcMarginalPrice = async (outcomeIndex: number) => {
+    const callOptions = this.account ? { from: this.account } : undefined
+    if (callOptions) {
+      return this.lmsrMarketMaker.methods.calcMarginalPrice(outcomeIndex).call(callOptions)
+    }
     return this.lmsrMarketMaker.methods.calcMarginalPrice(outcomeIndex).call()
   }
 

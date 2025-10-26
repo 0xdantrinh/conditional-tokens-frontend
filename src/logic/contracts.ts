@@ -67,20 +67,23 @@ const loadContracts = async (web3: any, lmsrAddress: string, account: string) =>
       providerAccountCache = account
       lmsrAddressCache = lmsrAddress
 
+      // Load config to get centralized contract addresses
+      const config = require('../conf/config.local.json')
+      const pmSystemAddress = config.contracts.conditionalTokens
+      const collateralTokenAddress = config.contracts.collateralToken
+
+      console.log('Using ConditionalTokens from config:', pmSystemAddress)
+      console.log('Using CollateralToken from config:', collateralTokenAddress)
+      console.log('Using LMSR address:', lmsrAddress)
+
       // Create LMSR Market Maker contract instance
+      console.log('Loading LMSR contract at:', lmsrAddress)
       const lmsrMarketMaker = await loadLMSRMarketMakerContract(web3, lmsrAddress)
       if (!lmsrMarketMaker) {
+        console.error('Failed to create LMSR contract instance at', lmsrAddress)
         throw new Error('Failed to load LMSR Market Maker contract')
       }
-
-      // Get addresses for other contracts
-      console.log('Getting pmSystem address...')
-      const pmSystemAddress = await lmsrMarketMaker.methods.pmSystem().call()
-      console.log('pmSystem address:', pmSystemAddress)
-
-      console.log('Getting collateralToken address...')
-      const collateralTokenAddress = await lmsrMarketMaker.methods.collateralToken().call()
-      console.log('collateralToken address:', collateralTokenAddress)
+      console.log('✅ LMSR contract loaded successfully')
 
       // Create Conditional Tokens contract instance
       const conditionalTokens = await loadConditionalTokensContract(web3, pmSystemAddress)
@@ -102,7 +105,12 @@ const loadContracts = async (web3: any, lmsrAddress: string, account: string) =>
         symbol: 'WETH',
       }
 
-      contracts = { lmsrMarketMaker, conditionalTokens, collateralToken }
+      contracts = {
+        lmsrMarketMaker,
+        conditionalTokens,
+        collateralToken,
+        account: providerAccountCache,
+      }
     }
     return contracts
   } catch (err) {
