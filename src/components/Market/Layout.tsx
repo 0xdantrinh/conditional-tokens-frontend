@@ -21,13 +21,7 @@ type TraderActionsProps = {
 
 type OperatorActionsProps = {
   isMarketClosed: boolean
-  close: any
-}
-
-type OracleActionsProps = {
-  isMarketClosed: boolean
-  marketInfo: any
-  resolve: any
+  close: () => void
 }
 
 type LayoutProps = {
@@ -169,24 +163,6 @@ const OperatorActions: React.FC<OperatorActionsProps> = ({ isMarketClosed, close
     <Button variant="contained" onClick={close} disabled={isMarketClosed}>
       Close
     </Button>
-  </>
-)
-
-const OracleActions: React.FC<OracleActionsProps> = ({ isMarketClosed, marketInfo, resolve }) => (
-  <>
-    <h3>Oracle actions:</h3>
-    <div className={styles.actions}>
-      {marketInfo.outcomes.map((outcome: any, index: number) => (
-        <Button
-          key={outcome.short}
-          variant="contained"
-          onClick={() => resolve(index)}
-          disabled={!isMarketClosed}
-        >
-          Resolve {outcome.title}
-        </Button>
-      ))}
-    </div>
   </>
 )
 
@@ -710,13 +686,6 @@ const Layout: React.FC<LayoutProps> = ({
 
           {account === process.env.REACT_APP_OPERATOR_ADDRESS && (
             <OperatorActions isMarketClosed={isMarketClosed} close={close} />
-          )}
-          {account === process.env.REACT_APP_ORACLE_ADDRESS && (
-            <OracleActions
-              isMarketClosed={isMarketClosed}
-              marketInfo={marketInfo}
-              resolve={resolve}
-            />
           )}
         </>
       ) : (
