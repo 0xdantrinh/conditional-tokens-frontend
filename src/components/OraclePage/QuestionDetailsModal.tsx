@@ -19,11 +19,33 @@ const QuestionDetailsModal: React.FC<QuestionDetailsModalProps> = ({
   onResolved,
 }) => {
   const [resolving, setResolving] = useState(false)
+  const [settling, setSettling] = useState(false)
   const [showConfirmation, setShowConfirmation] = useState(false)
+  const [showSettleConfirmation, setShowSettleConfirmation] = useState(false)
   const [txHash, setTxHash] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [expectedPayouts, setExpectedPayouts] = useState<string[]>([])
   const [livenessCountdown, setLivenessCountdown] = useState<number | null>(null)
+  const [currentStatus, setCurrentStatus] = useState(question.status)
+  const [isCurrentlyReady, setIsCurrentlyReady] = useState(question.isReady)
+
+  useEffect(() => {
+    // Check if ready in real-time
+    const checkReadyState = async () => {
+      console.log('Checking ready state for question:', question.questionID)
+      const ready = await oracleRepo.isReady(question.questionID)
+      console.log('isReady result:', ready)
+      setIsCurrentlyReady(ready)
+
+      if (ready && currentStatus === 'Proposed - Pending Liveness') {
+        console.log('Updating status to Ready to Resolve')
+        setCurrentStatus('Ready to Resolve')
+      }
+    }
+    checkReadyState()
+    const interval = setInterval(checkReadyState, 5000) // Check every 5 seconds
+    return () => clearInterval(interval)
+  }, [question.questionID, oracleRepo, currentStatus])
 
   useEffect(() => {
     // Load expected payouts if ready
@@ -73,6 +95,28 @@ const QuestionDetailsModal: React.FC<QuestionDetailsModalProps> = ({
       console.error('Error resolving question:', err)
       setError(err.message || 'Failed to resolve question')
       setResolving(false)
+    }
+  }
+
+  const handleSettle = async () => {
+    try {
+      setSettling(true)
+      setError(null)
+
+      const tx = await oracleRepo.settle(question.questionID, account)
+      setTxHash(tx.transactionHash)
+
+      // Wait for confirmation and reload
+      setTimeout(() => {
+        setSettling(false)
+        setShowSettleConfirmation(false)
+        // Reload the page to refresh ready state
+        window.location.reload()
+      }, 3000)
+    } catch (err: any) {
+      console.error('Error settling proposal:', err)
+      setError(err.message || 'Failed to settle proposal')
+      setSettling(false)
     }
   }
 
@@ -145,7 +189,12 @@ const QuestionDetailsModal: React.FC<QuestionDetailsModalProps> = ({
               </div>
               <div className={styles.infoRow}>
                 <span className={styles.label}>Status:</span>
-                <span className={styles.value}>{question.status}</span>
+                <span className={styles.value}>
+                  {currentStatus}
+                  {isCurrentlyReady && currentStatus !== 'Ready to Resolve' && (
+                    <span style={{ marginLeft: '10px', color: '#4caf50' }}>(Ready to resolve)</span>
+                  )}
+                </span>
               </div>
               <div className={styles.infoRow}>
                 <span className={styles.label}>Resolved:</span>
@@ -201,6 +250,61 @@ const QuestionDetailsModal: React.FC<QuestionDetailsModalProps> = ({
             </div>
           )}
 
+          {/* Settle Button - shown when liveness expired but not settled */}
+          {livenessCountdown === 0 &&
+            !isCurrentlyReady &&
+            question.oracleRequest &&
+            !question.oracleRequest.settled && (
+              <div className={styles.section}>
+                <div
+                  style={{
+                    padding: '15px',
+                    backgroundColor: '#fff3e0',
+                    borderRadius: '8px',
+                    border: '2px solid #ff9800',
+                    marginBottom: '15px',
+                  }}
+                >
+                  <div style={{ fontWeight: 'bold', marginBottom: '10px', color: '#e65100' }}>
+                    ⏰ Liveness Period Expired
+                  </div>
+                  <p style={{ marginBottom: '15px', fontSize: '14px' }}>
+                    The liveness period has expired. The proposal needs to be settled before it can
+                    be resolved. Anyone can call settle to finalize the proposal.
+                  </p>
+                  {!showSettleConfirmation ? (
+                    <button
+                      className={styles.resolveButton}
+                      onClick={() => setShowSettleConfirmation(true)}
+                      style={{ backgroundColor: '#ff9800' }}
+                    >
+                      ⚙️ Settle Proposal
+                    </button>
+                  ) : (
+                    <div className={styles.confirmation}>
+                      <p>Settle this proposal on the OptimisticOracle?</p>
+                      <div className={styles.confirmButtons}>
+                        <button
+                          className={styles.confirmButton}
+                          onClick={handleSettle}
+                          disabled={settling}
+                        >
+                          {settling ? 'Settling...' : 'Confirm Settle'}
+                        </button>
+                        <button
+                          className={styles.cancelButton}
+                          onClick={() => setShowSettleConfirmation(false)}
+                          disabled={settling}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
           {/* Settlement Information */}
           {question.questionData?.resolved && expectedPayouts.length > 0 && (
             <div className={styles.section}>
@@ -230,7 +334,7 @@ const QuestionDetailsModal: React.FC<QuestionDetailsModalProps> = ({
           </div>
 
           {/* Resolve Action */}
-          {question.isReady && !question.questionData?.resolved && (
+          {isCurrentlyReady && !question.questionData?.resolved && (
             <div className={styles.section}>
               {!showConfirmation ? (
                 <button className={styles.resolveButton} onClick={() => setShowConfirmation(true)}>

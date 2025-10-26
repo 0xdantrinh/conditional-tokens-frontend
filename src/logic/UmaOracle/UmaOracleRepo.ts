@@ -231,6 +231,24 @@ export default class UmaOracleRepo {
       .send({ from: fromAddress })
   }
 
+  // Settle price on OptimisticOracleV2 after liveness expires
+  settle = async (questionID: string, from?: string): Promise<any> => {
+    const questionData = await this.getQuestion(questionID)
+
+    // Use the connected account if 'from' is not provided
+    const accounts = await this.web3.eth.getAccounts()
+    const fromAddress = from || accounts[0]
+
+    return await this.optimisticOracle.methods
+      .settle(
+        UMA_CONFIG.BASE_SEPOLIA.umaCtfAdapter, // requester
+        UMA_CONFIG.BASE_SEPOLIA.priceIdentifier, // identifier
+        questionData.requestTimestamp, // timestamp
+        questionData.ancillaryData, // ancillaryData
+      )
+      .send({ from: fromAddress })
+  }
+
   // Helper to fetch events in chunks to avoid block range limits
   private async fetchEventsInChunks(
     eventName: string,
