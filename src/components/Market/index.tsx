@@ -108,10 +108,15 @@ const Market: React.FC<MarketProps> = ({ web3, account, marketConfig }) => {
 
       const collateral = await marketMakersRepo.getCollateralToken()
 
+      const umaQuestionId = marketConfig.umaQuestionId || marketConfig.questionId
+      if (!umaQuestionId) {
+        throw new Error(`Market config for ${marketConfig.title} is missing umaQuestionId`)
+      }
+
       // Use conditionId from config if available, otherwise calculate it
       const conditionId =
         marketConfig.conditionId ||
-        getConditionId(process.env.REACT_APP_ORACLE_ADDRESS, marketConfig.questionId, outcomeCount)
+        getConditionId(process.env.REACT_APP_ORACLE_ADDRESS, umaQuestionId, outcomeCount)
       console.log('ConditionId:', conditionId)
 
       const payoutDenominator = await conditionalTokensRepo.payoutDenominator(conditionId)
@@ -167,7 +172,7 @@ const Market: React.FC<MarketProps> = ({ web3, account, marketConfig }) => {
         description: marketConfig.description || '',
         outcomes,
         stage: MarketStage[await marketMakersRepo.stage()],
-        questionId: marketConfig.questionId,
+        umaQuestionId,
         conditionId: conditionId,
         payoutDenominator: payoutDenominator,
       }
@@ -542,12 +547,17 @@ const Market: React.FC<MarketProps> = ({ web3, account, marketConfig }) => {
   }
 
   const resolve = async (resolutionOutcomeIndex: number) => {
+    if (!marketInfo?.umaQuestionId) {
+      alert('Unable to resolve: UMA question id missing for this market')
+      return
+    }
+
     const payouts = Array.from(
       { length: marketInfo.outcomes.length },
       (value: any, index: number) => (index === resolutionOutcomeIndex ? 1 : 0),
     )
 
-    const tx = await conditionalTokensRepo.reportPayouts(marketInfo.questionId, payouts, account)
+    const tx = await conditionalTokensRepo.reportPayouts(marketInfo.umaQuestionId, payouts, account)
     console.log({ tx })
 
     await getMarketInfo()

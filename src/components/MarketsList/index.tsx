@@ -53,7 +53,7 @@ const MarketsList: React.FC<MarketsListProps> = ({ web3, account }) => {
         >
           {filteredMarkets.map((market: any, index: number) => (
             <Tab
-              key={market.questionId}
+              key={market.umaQuestionId || market.conditionId || index}
               label={
                 <div style={{ textAlign: 'left', textTransform: 'none' }}>
                   <div style={{ fontSize: '12px', opacity: 0.7 }}>{market.category}</div>
@@ -67,7 +67,11 @@ const MarketsList: React.FC<MarketsListProps> = ({ web3, account }) => {
 
       {filteredMarkets[selectedMarketIndex] && (
         <Market
-          key={filteredMarkets[selectedMarketIndex].questionId}
+          key={
+            filteredMarkets[selectedMarketIndex].umaQuestionId ||
+            filteredMarkets[selectedMarketIndex].conditionId ||
+            selectedMarketIndex
+          }
           web3={web3}
           account={account}
           marketConfig={filteredMarkets[selectedMarketIndex]}
